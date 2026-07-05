@@ -1,0 +1,36 @@
+import { recommendations, facilityById } from "@/data/district";
+
+export function ResourceTransfers() {
+  const approved = recommendations.filter(
+    (r) => r.status === "approved" || r.status === "modified"
+  );
+
+  if (approved.length === 0) {
+    return (
+      <p className="text-sm text-ink-soft italic">
+        No transfers approved yet — resolve recommendations above to populate this log.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {approved.map((r) => (
+        <div
+          key={r.id}
+          className="flex items-center justify-between border border-hairline bg-paper-dim/40 px-4 py-3 text-sm"
+        >
+          <span className="text-ink">
+            {facilityById(r.sourceFacilityId)?.name} →{" "}
+            {facilityById(r.targetFacilityId)?.name}
+          </span>
+          <span className="text-ink-soft">{r.subject}</span>
+          <span className="text-ink font-medium">{r.quantityOrDetail}</span>
+          <span className="text-[11px] uppercase tracking-wider text-risk-healthy">
+            {r.status}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
