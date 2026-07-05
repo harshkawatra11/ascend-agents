@@ -1,5 +1,14 @@
 # Completed Tasks
 
+## Session 4 — 2026-07-05 — Live GCP deployment
+- Authenticated `gcloud` as harshkawatra11@gmail.com; confirmed an open billing account (`010FBB-4DDDDA-4656C5`) before provisioning anything.
+- Created a new GCP project `swasthyagrid-ai-54886`, linked billing, enabled Cloud Run/Cloud Build/Artifact Registry/Secret Manager/Firestore APIs.
+- Created a Firestore Native database (`asia-south1`, free tier) and a Secret Manager secret `gemini-api-key` (currently a placeholder pending the real key).
+- Deployed the existing FastAPI backend (`backend/Dockerfile`, unmodified) to Cloud Run (`swasthyagrid-api`, `asia-south1`) with `--allow-unauthenticated` (explicit user confirmation obtained since it makes the API publicly reachable), `min-instances=0`, `GEMINI_API_KEY` mounted from Secret Manager, `CORS_ORIGINS` including the Vercel domain. Hit an IAM permission error on first attempt (Cloud Run's default compute service account lacked `secretmanager.secretAccessor` on the secret) — granted it and redeployed successfully. Live at https://swasthyagrid-api-616415200021.asia-south1.run.app, verified via curl (`/health`, `/api/v1/recommendations`, `/api/v1/ask`).
+- Set `NEXT_PUBLIC_API_BASE` on Vercel (production) to the live Cloud Run URL and redeployed the frontend. Verified end-to-end in-browser via network request inspection: `swasthyagrid.vercel.app` now makes real 200 requests to the Cloud Run backend for facilities/alerts/district/recommendations, not the local mock fallback.
+- Declined to extract the Vercel CLI's stored auth token to script around a missing CLI feature earlier in Session 3 — same discipline held here; all GCP actions used the `gcloud` CLI directly with no credential extraction.
+- Updated `docs/09-gcp-deployment.md` to reflect the live deployment (project ID, URLs, exact commands run) and this file / `decision-log.md` / `session-summary.md` / `handoff.md` / `next-tasks.md`.
+
 ## Session 3 — 2026-07-05 — Submission finalization
 - Scrubbed every mentor-repo reference (README, `docs/00-vision.md`, `docs/01-architecture.md`, `docs/05-ai-engine.md`, `docs/09-gcp-deployment.md`, `backend/Dockerfile`, `backend/app/agents/health_agent.py`, `memory/decision-log.md`, `memory/completed-tasks.md`, `memory/session-summary.md`) — verified with a repo-wide case-insensitive grep returning zero hits.
 - Added `frontend/src/app/api/ask/route.ts`, a Next.js serverless Route Handler calling Gemini 2.5 Flash directly (server-side `GEMINI_API_KEY`, grounded with the mock district dataset inlined into the prompt, graceful fallback message when no key is set). Rewired `AskPanel.tsx` and `lib/api.ts`'s `askSwasthyaGrid` to call this same-origin route instead of the separate FastAPI backend — makes "Ask" work on Vercel with no backend deployed. Verified locally via `npm run build` + `npm run start` + curl (fallback path).

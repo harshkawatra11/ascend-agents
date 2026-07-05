@@ -1,7 +1,23 @@
 # 09 — GCP Deployment
 
 ## Status
-**Designed now, executed later.** We have a Gemini API key (AI Studio) and Google Cloud credits, but no GCP project has been provisioned/authenticated in this session yet. Deployment scaffolding (Dockerfile, docker-compose, CI/CD, scripts) is committed so deployment is a checklist away, not a redesign.
+**Live.** The backend is deployed and serving production traffic.
+
+| | |
+|---|---|
+| Project | `swasthyagrid-ai-54886` |
+| Region | `asia-south1` |
+| Cloud Run service | `swasthyagrid-api` |
+| Backend URL | https://swasthyagrid-api-616415200021.asia-south1.run.app |
+| Firestore | Native mode, `asia-south1`, free tier (provisioned, not yet wired as the active data source — `DistrictRepository` still reads the seed JSON) |
+| Secret Manager | `gemini-api-key` secret exists, currently holding a **placeholder** value pending the real key |
+| Frontend | https://swasthyagrid.vercel.app (Vercel), `NEXT_PUBLIC_API_BASE` points at the Cloud Run URL above — verified via live network requests that the dashboard fetches real backend data in production |
+
+To activate the live "Ask" feature on the backend, replace the placeholder secret:
+```bash
+printf '%s' 'your-real-gemini-key' | gcloud secrets versions add gemini-api-key --data-file=- --project=swasthyagrid-ai-54886
+```
+No redeploy needed — Cloud Run reads `gemini-api-key:latest` on each cold start.
 
 ## ⚠️ Credits Discipline
 Before running **any** command that provisions or deploys billable GCP resources:
@@ -38,12 +54,23 @@ npm run dev
 ```
 `.env` (backend) supports `USE_VERTEX_AI=false` and `USE_SECRET_MANAGER=false` so the app runs entirely on a local `GEMINI_API_KEY` and mock JSON data, with zero GCP dependency for the prototype demo.
 
-## Deployment Steps (When Ready to Execute)
-1. `gcloud auth login` and `gcloud config set project <PROJECT_ID>` — confirm billing per the checklist above.
-2. `bash backend/scripts/setup_secrets.sh` — enables required APIs, creates a service account, stores `GEMINI_API_KEY` in Secret Manager.
-3. `python backend/scripts/setup_firestore.py` — seeds the district data into Firestore.
-4. `bash backend/scripts/deploy.sh` — builds the Docker image and deploys to Cloud Run.
-5. Deploy frontend (Cloud Run static container, or Vercel free tier as a zero-cost alternative — flagged for a human decision since it's outside GCP credits).
+## What Was Actually Run
+The live deployment above was created directly via `gcloud` CLI (not the `scripts/` helpers, which remain as an alternative documented path):
+```bash
+gcloud projects create swasthyagrid-ai-54886 --name="SwasthyaGrid AI"
+gcloud config set project swasthyagrid-ai-54886
+gcloud billing projects link swasthyagrid-ai-54886 --billing-account=<BILLING_ACCOUNT_ID>
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com firestore.googleapis.com
+gcloud firestore databases create --location=asia-south1 --type=firestore-native
+gcloud secrets create gemini-api-key --data-file=- --replication-policy=automatic   # placeholder value
+gcloud run deploy swasthyagrid-api --source backend/ --region asia-south1 \
+  --allow-unauthenticated --min-instances 0 --max-instances 3 \
+  --set-secrets "GEMINI_API_KEY=gemini-api-key:latest" \
+  --env-vars-file backend/.gcp-env-vars.yaml   # ENVIRONMENT, GOOGLE_CLOUD_PROJECT, CORS_ORIGINS
+```
+`--allow-unauthenticated` is required so the browser-based Vercel frontend can call the API directly; the exposed data is non-sensitive (mock/Firestore district data, no PII or payment info). The Cloud Run service account needed `roles/secretmanager.secretAccessor` granted explicitly on the `gemini-api-key` secret.
+
+`backend/scripts/setup_secrets.sh` / `setup_firestore.py` / `deploy.sh` remain as an alternative, more automated path for redeploying or recreating this setup from scratch.
 
 ## CI/CD
-`.github/workflows/ci-cd.yml`: on push to `main` → lint (Ruff) → test (Pytest) → build Docker image → (manual-approval gated) deploy to Cloud Run. Requires GitHub secrets `GCP_PROJECT_ID` and `GCP_SA_KEY`, which are **not** set until the human explicitly provisions the GCP project.
+`.github/workflows/ci-cd.yml`: on push to `main` → lint (Ruff) → test (Pytest) → build (frontend + backend). The deploy stage remains commented out — Cloud Run deploys are currently done manually via the CLI above, not from CI.
