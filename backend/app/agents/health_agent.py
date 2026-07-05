@@ -8,6 +8,10 @@ or the loop stalls.
 Gemini is used for EXPLANATION only, never prediction (docs/05-ai-engine.md) —
 every tool call reads already-computed forecasts/recommendations; the model
 just narrates them.
+
+Uses the `google-genai` SDK (the successor to the deprecated
+`google-generativeai` package, which mishandles newer non-`AIza`-prefixed
+API key formats and mistakenly sends them as OAuth bearer tokens).
 """
 
 import logging
@@ -40,33 +44,36 @@ class HealthAgent:
     ):
         self.settings = settings
         self.tools = build_tools(district, forecast, recommendation)
-        self._model = None
+        self._client = None
 
         if settings.gemini_api_key:
             try:
-                import google.generativeai as genai
+                from google import genai
 
-                genai.configure(api_key=settings.gemini_api_key)
-                self._model = genai.GenerativeModel(
-                    model_name=settings.gemini_model,
-                    system_instruction=SYSTEM_PROMPT,
-                    tools=self.tools,
-                )
+                self._client = genai.Client(api_key=settings.gemini_api_key)
             except Exception:  # pragma: no cover - defensive, library/env issues
-                logger.exception("Failed to initialize Gemini model")
-                self._model = None
+                logger.exception("Failed to initialize Gemini client")
+                self._client = None
 
     def ask(self, message: str) -> dict:
-        if self._model is None:
+        if self._client is None:
             return {"answer": FALLBACK_MESSAGE, "tool_calls": [], "confidence": None}
 
         try:
-            chat = self._model.start_chat(enable_automatic_function_calling=True)
+            from google.genai import types
+
+            chat = self._client.chats.create(
+                model=self.settings.gemini_model,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    tools=self.tools,
+                ),
+            )
             response = chat.send_message(message)
             tool_calls = [
                 part.function_call.name
-                for content in chat.history
-                for part in content.parts
+                for content in chat.get_history()
+                for part in (content.parts or [])
                 if getattr(part, "function_call", None)
             ][:MAX_TOOL_ITERATIONS]
             return {

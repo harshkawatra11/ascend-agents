@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import {
   facilities,
   recommendations,
@@ -58,15 +58,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      systemInstruction: SYSTEM_PROMPT,
-    });
-
+    const genAI = new GoogleGenAI({ apiKey });
     const prompt = `DISTRICT DATA (JSON):\n${buildDataContext()}\n\nQuestion: ${message}`;
-    const result = await model.generateContent(prompt);
-    const answer = result.response.text();
+    const result = await genAI.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: { systemInstruction: SYSTEM_PROMPT },
+    });
+    const answer = result.text;
 
     return NextResponse.json({ answer, confidence: 90 });
   } catch (error) {
