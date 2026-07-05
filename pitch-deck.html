@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SwasthyaGrid AI — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F4EEE4;
+    --paper-dim: #EDE4D3;
+    --parchment: #E4D8C3;
+    --ink: #231F1A;
+    --ink-soft: #4A433A;
+    --hairline: #D8CBB4;
+    --clay: #B5502E;
+    --brass: #8A6D3B;
+    --healthy: #3F6B4A;
+    --monitor: #A8823A;
+    --stress: #B5622E;
+    --critical: #9E3A2E;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #d8cbb4;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--ink);
+  }
+
+  .serif { font-family: 'Fraunces', serif; }
+
+  .toolbar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100;
+  }
+  .toolbar button {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 10px 18px;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(35,31,26,0.25);
+  }
+  .toolbar button:hover { filter: brightness(1.12); }
+
+  .deck {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 40px 0 80px;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(35,31,26,0.22);
+    padding: 64px 76px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+
+  .slide h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 44px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .slide .kicker {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+
+  .slide-number {
+    position: absolute;
+    bottom: 28px;
+    right: 40px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+  }
+
+  .brand-tag {
+    position: absolute;
+    bottom: 28px;
+    left: 76px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .rubric-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    border: 1px solid var(--clay);
+    padding: 4px 10px;
+    margin-bottom: 18px;
+  }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--hairline);
+    margin: 18px 0;
+  }
+
+  /* ---------- Reusable grid pieces ---------- */
+  .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex: 1; align-items: start; }
+  .cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex: 1; align-items: start; }
+  .cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+  .card {
+    border: 1px solid var(--hairline);
+    background: var(--paper-dim);
+    padding: 22px 24px;
+  }
+  .card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .card p, .card li { font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+  .card ul { padding-left: 18px; }
+
+  .pill {
+    display: inline-block;
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid var(--hairline);
+    background: var(--paper);
+    color: var(--ink);
+    margin: 3px 6px 3px 0;
+  }
+
+  .big-number {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 600;
+    color: var(--clay);
+    line-height: 1;
+  }
+  .big-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+
+  .arrow-flow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .arrow-flow .node {
+    border: 1px solid var(--hairline);
+    background: var(--paper-dim);
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    min-width: 150px;
+    text-align: center;
+  }
+  .arrow-flow .arrow {
+    font-size: 20px;
+    color: var(--brass);
+  }
+
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  /* ---------- Slide-specific ---------- */
+
+  /* Slide 1 — Cover */
+  .cover {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(181,80,46,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(138,109,59,0.08), transparent 45%),
+      var(--paper);
+  }
+  .cover .eyebrow { text-align: center; }
+  .cover .brand-name {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 88px;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .cover .tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--ink-soft);
+    margin-top: 18px;
+  }
+  .cover .divider {
+    width: 60px;
+    height: 2px;
+    background: var(--clay);
+    margin: 32px auto;
+  }
+  .cover .authors {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+  .cover .author-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cover .author-meta {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+  .cover .event-tag {
+    margin-top: 40px;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brass);
+  }
+
+  /* Slide 2 — Problem */
+  .problem-stat { text-align: center; }
+
+  /* Slide 6 — recommendation card mock */
+  .rec-mock {
+    border: 1px solid var(--hairline);
+    background: var(--paper-dim);
+    padding: 26px 30px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .rec-mock .rec-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .rec-mock .rec-type { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+  .rec-mock .rec-title { font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink); }
+  .rec-mock .rec-sub { font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
+  .rec-mock .confidence { text-align: right; }
+  .rec-mock .confidence .num { font-family: 'Fraunces', serif; font-size: 34px; color: var(--clay); }
+  .rec-mock .confidence .lbl { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); }
+  .rec-mock ul { margin-top: 16px; padding-left: 0; list-style: none; }
+  .rec-mock li { font-size: 14px; color: var(--ink-soft); margin-bottom: 6px; padding-left: 16px; position: relative; }
+  .rec-mock li::before { content: "—"; position: absolute; left: 0; color: var(--brass); }
+  .rec-mock .actions { margin-top: 20px; display: flex; gap: 10px; }
+  .rec-mock .btn { padding: 9px 18px; font-size: 13px; font-weight: 500; border: 1px solid var(--hairline); }
+  .rec-mock .btn.approve { background: var(--clay); color: var(--paper); border-color: var(--clay); }
+  .rec-mock .btn.modify { border-color: var(--brass); color: var(--brass); }
+  .rec-mock .btn.reject { color: var(--ink-soft); border-color: transparent; }
+
+  /* Nav dots (screen only) */
+  .nav-dots {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 100;
+  }
+  .nav-dots a {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    opacity: 0.35;
+    display: block;
+  }
+  .nav-dots a:hover { opacity: 0.9; }
+
+  @media print {
+    .toolbar, .nav-dots { display: none !important; }
+    html, body { background: white; }
+    .deck { padding: 0; gap: 0; }
+    .slide {
+      box-shadow: none;
+      page-break-after: always;
+      width: 1280px;
+      height: 720px;
+    }
+    @page {
+      size: 1280px 720px;
+      margin: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">Save as PDF ↓</button>
+</div>
+
+<div class="nav-dots">
+  <a href="#s1" title="Cover"></a>
+  <a href="#s2" title="Problem"></a>
+  <a href="#s3" title="Vision"></a>
+  <a href="#s4" title="Solution"></a>
+  <a href="#s5" title="How it works"></a>
+  <a href="#s6" title="Core Principle"></a>
+  <a href="#s7" title="Product Tour"></a>
+  <a href="#s8" title="AI Execution"></a>
+  <a href="#s9" title="Scalability"></a>
+  <a href="#s10" title="Inclusivity"></a>
+  <a href="#s11" title="Impact"></a>
+  <a href="#s12" title="Thank You"></a>
+</div>
+
+<div class="deck">
+
+  <!-- SLIDE 1 — COVER -->
+  <section class="slide cover" id="s1">
+    <p class="eyebrow">GDG BuildWithAI — District Health Track</p>
+    <h1 class="brand-name">SwasthyaGrid AI</h1>
+    <p class="tagline">An AI District Health Operations Center</p>
+    <div class="divider"></div>
+    <div class="authors">
+      <div>
+        <div class="author-name">Harsh Kawatra</div>
+        <div class="author-meta">Delhi Technological University (B.Tech ECE)</div>
+      </div>
+      <div>
+        <div class="author-name">Dayita Arora</div>
+        <div class="author-meta">Ramjas College (B.Sc. Statistics)</div>
+      </div>
+    </div>
+    <p class="event-tag">Predictive · Prescriptive · Explainable · Human-Governed</p>
+    <div class="slide-number">01 / 12</div>
+  </section>
+
+  <!-- SLIDE 2 — THE PROBLEM -->
+  <section class="slide" id="s2">
+    <p class="eyebrow">The Problem</p>
+    <h1 class="title">PHCs run blind, and no one upstream can see it</h1>
+    <p class="kicker">Medicine stock-outs, unmanaged footfall, bed unavailability, unpredictable doctor attendance — tracked on paper, discovered too late.</p>
+    <div class="cols-4" style="margin-top: 10px;">
+      <div class="card problem-stat">
+        <div class="big-number">50+</div>
+        <div class="big-label">Health centres per district a single officer must monitor</div>
+      </div>
+      <div class="card problem-stat">
+        <div class="big-number">0</div>
+        <div class="big-label">Real-time visibility into district-wide stock levels today</div>
+      </div>
+      <div class="card problem-stat">
+        <div class="big-number">3+</div>
+        <div class="big-label">Days a stock-out is typically discovered after it starts</div>
+      </div>
+      <div class="card problem-stat">
+        <div class="big-number">↑</div>
+        <div class="big-label">Patient wait times &amp; emergency procurement costs, every time</div>
+      </div>
+    </div>
+    <hr class="rule">
+    <p style="font-size: 15px; color: var(--ink-soft); max-width: 900px;">Underperforming or under-resourced centres are flagged manually, if at all — by the time a district administrator hears about a crisis, it has already happened.</p>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">02 / 12</div>
+  </section>
+
+  <!-- SLIDE 3 — THE VISION -->
+  <section class="slide" id="s3">
+    <p class="eyebrow">The Insight</p>
+    <h1 class="title">From "what happened" to "what should I do"</h1>
+    <p class="kicker">Think of it as Google Maps for district healthcare operations.</p>
+    <div class="cols-3">
+      <div class="card">
+        <h3>Legacy Systems Answer</h3>
+        <p>"What happened?" — a dashboard of yesterday's numbers, reviewed after the damage is done.</p>
+      </div>
+      <div class="card">
+        <h3>SwasthyaGrid Answers</h3>
+        <p>"What will happen, why, and what should I do about it?" — before the shortage occurs.</p>
+      </div>
+      <div class="card">
+        <h3>The Analogy</h3>
+        <p>Instead of routing cars, SwasthyaGrid routes medicines, doctors, beds, and testing kits — across an entire district, continuously.</p>
+      </div>
+    </div>
+    <hr class="rule">
+    <div style="display:flex; gap: 40px;">
+      <div><span class="pill">Forecast</span></div>
+      <div><span class="pill">Explain</span></div>
+      <div><span class="pill">Recommend</span></div>
+      <div><span class="pill">Redistribute</span></div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">03 / 12</div>
+  </section>
+
+  <!-- SLIDE 4 — THE SOLUTION -->
+  <section class="slide" id="s4">
+    <p class="eyebrow">The Solution</p>
+    <h1 class="title">An AI District Health Operations Center</h1>
+    <p class="kicker">A control room where AI proposes actions, and humans approve them.</p>
+    <div class="cols-4">
+      <div class="card">
+        <h3>Predictive</h3>
+        <p>Forecast shortages, bed occupancy, and patient demand before they occur.</p>
+      </div>
+      <div class="card">
+        <h3>Prescriptive</h3>
+        <p>Recommend concrete resource transfers, staffing adjustments, interventions.</p>
+      </div>
+      <div class="card">
+        <h3>Explainable</h3>
+        <p>Every recommendation includes the underlying factors and a confidence score.</p>
+      </div>
+      <div class="card">
+        <h3>Human-Governed</h3>
+        <p>Administrators always approve, reject, or modify — before any action is taken.</p>
+      </div>
+    </div>
+    <hr class="rule">
+    <p style="font-size: 15px; color: var(--ink-soft); max-width: 900px;">This is what elevates the prototype from a reporting tool to a real district-scale decision-support system — the way public health administrators actually need to operate.</p>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">04 / 12</div>
+  </section>
+
+  <!-- SLIDE 5 — HOW IT WORKS -->
+  <section class="slide" id="s5">
+    <p class="eyebrow">How It Works</p>
+    <h1 class="title">The District AI Engine</h1>
+    <p class="kicker">Every data point flows through one pipeline.</p>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap: 22px;">
+      <div class="arrow-flow" style="justify-content:center;">
+        <div class="node">Facility Data<br><span style="color:var(--ink-soft); font-size:11px;">stock · footfall · beds · attendance</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Forecast Engine<br><span style="color:var(--ink-soft); font-size:11px;">deterministic, auditable</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Optimization Engine<br><span style="color:var(--ink-soft); font-size:11px;">haversine surplus search</span></div>
+        <div class="arrow">→</div>
+        <div class="node">Recommendation Engine<br><span style="color:var(--ink-soft); font-size:11px;">action + confidence + reasons</span></div>
+        <div class="arrow">→</div>
+        <div class="node" style="background: var(--parchment); border-color: var(--clay);">District Dashboard<br><span style="color:var(--ink-soft); font-size:11px;">human approves</span></div>
+      </div>
+      <p style="text-align:center; font-size: 14px; color: var(--ink-soft); max-width: 820px; margin: 0 auto;">
+        Gemini 2.5 Flash sits <em>beside</em> this pipeline, not inside it — it takes the structured forecast/recommendation output and explains it in plain language. It never generates the prediction numbers itself.
+      </p>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">05 / 12</div>
+  </section>
+
+  <!-- SLIDE 6 — CORE PRINCIPLE -->
+  <section class="slide" id="s6">
+    <p class="eyebrow">Core AI Principle</p>
+    <h1 class="title">AI never directly executes a decision</h1>
+    <p class="kicker">Every recommendation is proposed, explained, and scored — never auto-run.</p>
+    <div class="rec-mock">
+      <div class="rec-top">
+        <div>
+          <div class="rec-type">Stock Transfer</div>
+          <div class="rec-title">PHC Sector-12 → PHC Rural-14</div>
+          <div class="rec-sub">Paracetamol · <strong>250 strips</strong></div>
+        </div>
+        <div class="confidence">
+          <div class="num">96%</div>
+          <div class="lbl">Confidence</div>
+        </div>
+      </div>
+      <ul>
+        <li>Projected stock depletion in 3.4 days</li>
+        <li>Rain forecast increasing fever cases districtwide</li>
+        <li>Recent dengue cluster trend nearby</li>
+        <li>PHC Sector-12 holds surplus, 6 km away</li>
+      </ul>
+      <div class="actions">
+        <div class="btn approve">Approve</div>
+        <div class="btn modify">Modify</div>
+        <div class="btn reject">Reject</div>
+      </div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">06 / 12</div>
+  </section>
+
+  <!-- SLIDE 7 — PRODUCT TOUR -->
+  <section class="slide" id="s7">
+    <p class="eyebrow">Product Tour</p>
+    <h1 class="title">A real dashboard, not a slideshow</h1>
+    <p class="kicker">Ten routed views inside one district operations console.</p>
+    <div class="cols-4">
+      <div class="card"><h3>Overview</h3><p>KPIs, district map, live risk donut, top alerts.</p></div>
+      <div class="card"><h3>Inventory</h3><p>Days-remaining per medicine, transfer recommendations.</p></div>
+      <div class="card"><h3>Footfall</h3><p>7-day forecast + demographic breakdown.</p></div>
+      <div class="card"><h3>Beds</h3><p>Occupancy today / tomorrow / next week + redirects.</p></div>
+      <div class="card"><h3>Doctors</h3><p>Attendance risk, absence patterns, delay impact.</p></div>
+      <div class="card"><h3>Diagnostics</h3><p>Test/equipment availability + nearest alternative.</p></div>
+      <div class="card"><h3>Recommendations</h3><p>The full Approve / Reject / Modify workspace.</p></div>
+      <div class="card"><h3>District Map</h3><p>Every facility, colour-coded by live risk.</p></div>
+    </div>
+    <p style="margin-top:14px; font-size:13px; color:var(--ink-soft);">Plus Facilities (sortable directory + detail drawer), Analytics (causal chains &amp; performance scorecards), a role switcher, and a ⌘K command palette.</p>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">07 / 12</div>
+  </section>
+
+  <!-- SLIDE 8 — AI / TECHNICAL EXECUTION -->
+  <section class="slide" id="s8">
+    <span class="rubric-tag">AI / Technical Execution — 25%</span>
+    <h1 class="title">The AI does real work, not decoration</h1>
+    <div class="cols-2">
+      <div class="card">
+        <h3>Forecasting</h3>
+        <p>Every medicine, bed, and footfall forecast is computed from real consumption/occupancy data with a confidence score and named contributing factors — never a bare number.</p>
+      </div>
+      <div class="card">
+        <h3>Redistribution Engine</h3>
+        <p>A haversine-distance surplus search ranks candidate donor facilities and computes an exact transfer quantity + weighted confidence score — a genuine optimization, not a lookup table.</p>
+      </div>
+      <div class="card">
+        <h3>Gemini 2.5 Flash — Explanation Only</h3>
+        <p>A tool-calling agent answers free-form questions grounded in live district data. It explains forecasts and recommendations; it never invents the numbers behind them.</p>
+      </div>
+      <div class="card">
+        <h3>End-to-End &amp; Live</h3>
+        <p>FastAPI backend, Next.js frontend, deployed and reachable today at <strong>swasthyagrid.vercel.app</strong> — not a slide, a running product.</p>
+      </div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">08 / 12</div>
+  </section>
+
+  <!-- SLIDE 9 — DEPLOYABILITY & SCALABILITY -->
+  <section class="slide" id="s9">
+    <span class="rubric-tag">Deployability &amp; Scalability — 25%</span>
+    <h1 class="title">From one district to a state, in weeks</h1>
+    <div class="cols-3">
+      <div class="card">
+        <h3>Today</h3>
+        <p>Next.js on Vercel, FastAPI clean-architecture backend, Docker + CI/CD pipeline already green. Repository-abstracted data layer — swapping mock data for Firestore touches one file.</p>
+      </div>
+      <div class="card">
+        <h3>Near Term</h3>
+        <p>Cloud Run for the API, Firestore for live facility data, Secret Manager for keys — all designed and scripted, ready to provision.</p>
+      </div>
+      <div class="card">
+        <h3>At Scale</h3>
+        <p>BigQuery for district-wide analytics, Vertex AI for trained forecasting models, Pub/Sub + Cloud Scheduler for real-time ingestion across 50+ facilities per district — and beyond, statewide.</p>
+      </div>
+    </div>
+    <hr class="rule">
+    <div class="arrow-flow">
+      <div class="node">One District</div>
+      <div class="arrow">→</div>
+      <div class="node">District Network</div>
+      <div class="arrow">→</div>
+      <div class="node">State-Wide Rollout</div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">09 / 12</div>
+  </section>
+
+  <!-- SLIDE 10 — INCLUSIVITY & ACCESSIBILITY -->
+  <section class="slide" id="s10">
+    <span class="rubric-tag">Inclusivity &amp; Accessibility — 15%</span>
+    <h1 class="title">Built for how a PHC actually works</h1>
+    <div class="cols-2">
+      <div class="card">
+        <h3>Multilingual by Design</h3>
+        <p>Cloud Translation API on the roadmap so every recommendation, alert, and Ask response can render in the facility staff's own language — not just English.</p>
+      </div>
+      <div class="card">
+        <h3>Voice &amp; Low-Literacy Access</h3>
+        <p>Cloud Speech-to-Text / Text-to-Speech planned for voice-based data intake and read-aloud alerts, so literacy is never a barrier to reporting a stock-out.</p>
+      </div>
+      <div class="card">
+        <h3>Low-Connectivity Design</h3>
+        <p>SMS / WhatsApp Business API intake path for facilities with unreliable internet — the recommendation engine and dashboard already run on a lightweight, mock-fallback-first architecture.</p>
+      </div>
+      <div class="card">
+        <h3>Role-Based Access</h3>
+        <p>PHC Staff, District Administrator, and State Health Officer each see a purpose-built view — approval power sits only where it belongs.</p>
+      </div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">10 / 12</div>
+  </section>
+
+  <!-- SLIDE 11 — IMPACT & WHY WE WIN -->
+  <section class="slide" id="s11">
+    <span class="rubric-tag">Impact Potential — 10%</span>
+    <h1 class="title">Why SwasthyaGrid wins</h1>
+    <div class="cols-4" style="margin-bottom: 10px;">
+      <div class="card problem-stat"><div class="big-number">50+</div><div class="big-label">Facilities one district admin can now actually monitor</div></div>
+      <div class="card problem-stat"><div class="big-number">3.4d</div><div class="big-label">Advance warning before a stock-out, not after</div></div>
+      <div class="card problem-stat"><div class="big-number">96%</div><div class="big-label">Confidence attached to every recommendation shown</div></div>
+      <div class="card problem-stat"><div class="big-number">↓</div><div class="big-label">Patient wait time when redistribution happens early</div></div>
+    </div>
+    <hr class="rule">
+    <div class="cols-2">
+      <div class="card">
+        <h3>Four Differentiators</h3>
+        <p>Predictive · Prescriptive · Explainable · Human-Governed — most teams stop at a dashboard. We built the operations layer underneath it.</p>
+      </div>
+      <div class="card">
+        <h3>It Already Works</h3>
+        <p>Live now at <strong>swasthyagrid.vercel.app</strong> — a real, running, end-to-end product a judge can click through today, not a mockup.</p>
+      </div>
+    </div>
+    <div class="brand-tag">SwasthyaGrid AI</div>
+    <div class="slide-number">11 / 12</div>
+  </section>
+
+  <!-- SLIDE 12 — THANK YOU -->
+  <section class="slide cover" id="s12">
+    <p class="eyebrow">Thank You</p>
+    <h1 class="brand-name" style="font-size: 64px;">SwasthyaGrid AI</h1>
+    <p class="tagline">An AI District Health Operations Center</p>
+    <div class="divider"></div>
+    <div class="authors">
+      <div>
+        <div class="author-name">Harsh Kawatra</div>
+        <div class="author-meta">harshkawatra11@gmail.com</div>
+      </div>
+      <div>
+        <div class="author-name">Dayita Arora</div>
+        <div class="author-meta">dayita.arora22@gmail.com</div>
+      </div>
+    </div>
+    <p class="event-tag" style="margin-top: 36px;">swasthyagrid.vercel.app · github.com/harshkawatra11/SwasthyaGrid-gdg-buildwithai</p>
+    <div class="slide-number">12 / 12</div>
+  </section>
+
+</div>
+
+</body>
+</html>

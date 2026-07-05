@@ -11,16 +11,16 @@ If you're picking this up fresh, read in this order:
 - AI never auto-executes; recommendations always start `pending` (see `docs/07-recommendation-engine.md`).
 - Gemini (`gemini-2.5-flash`) explains, never predicts numbers.
 - No spending beyond GCP credits + Gemini free/AI-Studio tier — flag anything else before proceeding.
-- GitHub: public repo `harshkawatra11/SwasthyaGrid-gdg-buildwithai`, commit at each checkpoint listed in `memory/current-task.md`.
+- GitHub: public repo `harshkawatra11/SwasthyaGrid-gdg-buildwithai`, CI/CD is green.
+- Live site: **https://swasthyagrid.vercel.app** (Vercel project `swasthyagrid`, team `harsh-s-vercel-team`), git-connected for auto-deploy on push to `master`. Monorepo build config lives in the root `vercel.json` (builds `frontend/`) since the project's dashboard Root Directory setting couldn't be changed via CLI/MCP tooling.
+- Never extract or use stored CLI/tool auth tokens directly against an API — if a needed action has no proper CLI/MCP path, find a config-file-based workaround (as done for the Vercel monorepo root) or ask the user to do the one dashboard click.
 
-## State as of end of Session 2
-The frontend is now a real multi-page dashboard app (not a single scroll page): `(dashboard)` route group, sidebar+topbar shell, 10 routed pages, role switcher, API-client-with-mock-fallback, lifted recommendation state, live risk-downgrade on approval, ⌘K palette, toasts, drawers. Verified end-to-end in-browser against the live FastAPI backend. Backend and docs/memory structure otherwise unchanged from Session 1.
+## State as of end of Session 3 (current)
+Submission-ready: no mentor-repo references anywhere (verified via grep), a Next.js `/api/ask` serverless route makes the Ask feature work standalone in production (Gemini 2.5 Flash, grounded via inlined mock data, graceful fallback), the frontend is live and auto-deploying on `swasthyagrid.vercel.app`, and `pitch-deck.html` (12 on-brand, 16:9, print-to-PDF slides) exists at the repo root.
 
-## State as of end of Session 1 (superseded above for frontend)
-Full vertical slice built and pushed: docs, memory, frontend dashboard (Next.js, mock data, verified in-browser), backend (FastAPI, verified via curl/pytest), Gemini Ask feature (coded, fallback verified, no live key set), deployment scaffolding (Docker/scripts committed; CI/CD workflow file NOT yet pushed — see below).
-
-## Two things to do next, in order
-1. Run `gh auth refresh -h github.com -s workflow` (device-code flow), then `git add .github/workflows/ci-cd.yml && git commit -m "ci: add workflow" && git push` — the workflow file exists locally but isn't committed because the push was rejected without this scope.
-2. Add `GEMINI_API_KEY` to `backend/.env` to make "Ask SwasthyaGrid" live end-to-end; everything else already works without it.
-
-See `memory/next-tasks.md` for the fuller backlog.
+## What's still pending
+1. **Add the real Gemini key** in two places once you have it:
+   - `backend/.env` → `GEMINI_API_KEY=...` (activates the FastAPI backend's own Ask agent for local dev).
+   - Vercel env: `cd frontend && vercel env add GEMINI_API_KEY production`, then redeploy — activates the live site's `/api/ask` route.
+2. Provision a GCP project + deploy the FastAPI backend to Cloud Run when ready (`docs/09-gcp-deployment.md` has the credits-discipline checklist and scripts).
+3. See `memory/next-tasks.md` for the fuller backlog (PHC Staff data-entry UI, real ML models, Firestore, i18n, etc).
