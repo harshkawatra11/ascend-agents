@@ -8,15 +8,33 @@
 
 Built by **Harsh Kawatra** & **Dayita Arora** for GDG BuildWithAI
 
-[![Frontend](https://img.shields.io/badge/frontend-Next.js%20%2B%20TypeScript-4a433a?style=flat-square)](frontend)
-[![Backend](https://img.shields.io/badge/backend-FastAPI%20%2B%20Python-4a433a?style=flat-square)](backend)
+**▶ Live: [swasthyagrid.vercel.app](https://swasthyagrid.vercel.app)** &nbsp;·&nbsp; deployed end-to-end on Google Cloud
+
+[![Live](https://img.shields.io/badge/●_live-swasthyagrid.vercel.app-3f6b4a?style=flat-square)](https://swasthyagrid.vercel.app)
+[![Frontend](https://img.shields.io/badge/frontend-Next.js%20on%20Vercel-4a433a?style=flat-square)](frontend)
+[![Backend](https://img.shields.io/badge/backend-FastAPI%20on%20Cloud%20Run-4a433a?style=flat-square)](backend)
 [![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-b5502e?style=flat-square)](docs/05-ai-engine.md)
-[![Cloud](https://img.shields.io/badge/cloud-Google%20Cloud-8a6d3b?style=flat-square)](docs/09-gcp-deployment.md)
-[![License](https://img.shields.io/badge/docs--first-workflow-3f6b4a?style=flat-square)](docs)
+[![Cloud](https://img.shields.io/badge/cloud-Cloud%20Run%20·%20Firestore%20·%20Secret%20Manager-8a6d3b?style=flat-square)](docs/09-gcp-deployment.md)
 
 </div>
 
 ---
+
+## ▶ Live & Deployed on Google Cloud
+
+This is a **running product**, not a mockup — click through it right now:
+
+| | |
+|---|---|
+| **Live app** | **https://swasthyagrid.vercel.app** |
+| **Frontend** | Next.js on **Vercel** — auto-deploys from `main` |
+| **Backend API** | FastAPI on **Google Cloud Run** (`asia-south1`, scale-to-zero) — `https://swasthyagrid-api-616415200021.asia-south1.run.app` |
+| **Data** | **Firestore** (Native) · **Secret Manager** for the Gemini key · **Cloud Build** for container builds |
+| **AI** | **Gemini 2.5 Flash** — explains forecasts & recommendations, never invents the numbers |
+
+The browser talks to Vercel, which calls the Cloud Run API, which reads Firestore and pulls the Gemini key from Secret Manager. Every dashboard view on the live site fetches real data from the Cloud Run backend — verified end-to-end. See [`docs/09-gcp-deployment.md`](docs/09-gcp-deployment.md) for the exact `gcloud` commands and the scale path (**BigQuery · Vertex AI · Pub/Sub · Cloud Scheduler**).
+
+📊 **Pitch deck:** open [`pitch-deck.html`](pitch-deck.html) in a browser → *Save as PDF*.
 
 ## The Problem
 
@@ -82,13 +100,15 @@ No generic blue-purple SaaS gradients. SwasthyaGrid is styled as an **editorial,
 ## Architecture
 
 ```
-Next.js Dashboard  ──REST──▶  FastAPI Backend
-                                   │
-                    ┌──────────────┼──────────────┐
-                    ▼              ▼              ▼
-              Forecast Engine  Recommendation   Gemini 2.5 Flash
-              (deterministic)  Engine (search/   (explanation only,
-                                rank/propose)     never prediction)
+ Browser ──▶ Next.js (Vercel) ──REST──▶ FastAPI (Cloud Run · asia-south1)
+                                             │
+                        ┌────────────────────┼───────────────────────┐
+                        ▼                     ▼                        ▼
+                 Forecast Engine     Recommendation Engine     Gemini 2.5 Flash
+                 (deterministic)     (haversine search/         (explanation only,
+                                      rank/propose)              never prediction)
+                        │                     │
+                        └─────── Firestore · Secret Manager ──────────┘
 ```
 
 Every forecast and recommendation carries `{ value, confidence, factors[] }` as a first-class API contract — not an afterthought. Full detail in [`docs/01-architecture.md`](docs/01-architecture.md).
@@ -101,7 +121,8 @@ Every forecast and recommendation carries `{ value, confidence, factors[] }` as 
 | Backend | FastAPI, Python 3.12, Pydantic Settings, clean-architecture layering |
 | AI | Gemini 2.5 Flash (AI Studio) — tool-calling agent for explanation |
 | Forecasting | Deterministic mock engine now; XGBoost/LightGBM designed for production (`docs/06-forecasting.md`) |
-| Cloud (designed) | Cloud Run, Firestore, Secret Manager, BigQuery, Vertex AI (`docs/09-gcp-deployment.md`) |
+| Cloud (**live**) | **Cloud Run** (backend) · **Firestore** · **Secret Manager** · **Cloud Build** · Vercel + GitHub CI |
+| Cloud (scale path) | BigQuery · Vertex AI · Pub/Sub · Cloud Scheduler (`docs/09-gcp-deployment.md`) |
 
 ## Documentation-First
 
