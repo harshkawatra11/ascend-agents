@@ -1,10 +1,9 @@
 """SmartHealthAgent-style Gemini tool-calling orchestration.
 
-Mirrors the agent loop pattern in the mentor reference repo
-(GDG-BuildWithAI_smart-health-ai-platform/app/agents/health_agent.py):
-user message -> Gemini decides which tool(s) to call -> tools execute against
-services/ -> results fed back -> final natural-language answer. Max 5 iterations
-with a graceful fallback if the API key/quota is unavailable or the loop stalls.
+Agent loop: user message -> Gemini decides which tool(s) to call -> tools
+execute against services/ -> results fed back -> final natural-language answer.
+Max 5 iterations with a graceful fallback if the API key/quota is unavailable
+or the loop stalls.
 
 Gemini is used for EXPLANATION only, never prediction (docs/05-ai-engine.md) —
 every tool call reads already-computed forecasts/recommendations; the model

@@ -39,7 +39,7 @@ District Dashboard     → human reviews, approves/rejects/modifies
 Gemini 2.5 Flash sits **beside** this pipeline, not inside the prediction path — it takes the structured forecast/recommendation output and produces a natural-language explanation and answers free-form questions ("Ask SwasthyaGrid") via tool calls back into the same services.
 
 ## Backend Layering (Clean Architecture)
-Mirrors the mentor reference repo's proven layout, adapted for our domain:
+A proven clean-architecture layout, adapted for our domain:
 
 ```
 backend/app/

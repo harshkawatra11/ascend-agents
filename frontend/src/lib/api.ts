@@ -256,7 +256,7 @@ export async function getDiagnostics() {
 
 export async function askSwasthyaGrid(message: string) {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/ask`, {
+    const res = await fetch("/api/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),

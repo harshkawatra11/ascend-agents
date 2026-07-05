@@ -139,10 +139,6 @@ npm run dev
 
 Open `http://localhost:3000`. The dashboard works fully on mock data; the Ask panel activates automatically once `GEMINI_API_KEY` is set in `backend/.env`.
 
-## Credits & Acknowledgements
-
-Architecture and deployment patterns (clean layering, Cloud Run, Secret Manager, CI/CD shape) were studied from our mentor's workshop reference repo, [`shivkumarsah/GDG-BuildWithAI_smart-health-ai-platform`](https://github.com/shivkumarsah/GDG-BuildWithAI_smart-health-ai-platform) — reused as engineering patterns, not copied code.
-
 ---
 
 <div align="center">

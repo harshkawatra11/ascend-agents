@@ -37,10 +37,8 @@ Think of it as **Google Maps for district healthcare operations** — instead of
 3. **Explainable, not opaque** — every recommendation ships with underlying factors and a confidence score.
 4. **Human-governed, not autonomous** — administrators always approve/reject/modify before any action is taken.
 
-## Relationship to Mentor's Reference Repo
-Our mentor (Shiv Kumar Sah) built `GDG-BuildWithAI_smart-health-ai-platform` as a workshop reference: a FastAPI + Gemini tool-calling **chat assistant** over Firestore, deployed on Cloud Run. We studied it (fetched, not cloned) and reuse its production-engineering patterns — clean architecture layering, Pydantic Settings config, health/readiness/metrics endpoints, multi-stage Docker build, and CI/CD shape. See [09-gcp-deployment.md](09-gcp-deployment.md) for details.
-
-SwasthyaGrid goes further: instead of a Q&A chatbot, it is a **district-scale forecasting + optimization + recommendation control room**, with Gemini used only to *explain* AI-generated forecasts/recommendations in natural language — not to generate the predictions themselves.
+## Why Not "Just a Chatbot"
+Many AI-in-healthcare prototypes stop at a FastAPI + Gemini tool-calling **chat assistant** over a database. SwasthyaGrid goes further: instead of a Q&A chatbot, it is a **district-scale forecasting + optimization + recommendation control room**, with Gemini used only to *explain* AI-generated forecasts/recommendations in natural language — not to generate the predictions themselves. See [09-gcp-deployment.md](09-gcp-deployment.md) for the production-engineering approach (clean architecture layering, Pydantic Settings config, health/readiness/metrics endpoints, multi-stage Docker build, and CI/CD shape).
 
 ## Design Mandate
 The UI must not look like generic "AI SaaS slop" (no blue-purple gradients, no generic dashboard template feel). It must read as **agency-grade, editorial, heavily professional** — a beige/warm-neutral background, deliberate typography, and restrained color use for signal (risk states), not decoration. See [08-design-system.md](08-design-system.md).

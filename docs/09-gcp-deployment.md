@@ -11,7 +11,7 @@ Before running **any** command that provisions or deploys billable GCP resources
 4. Never enable BigQuery/Vertex AI training jobs or reserved capacity without an explicit human decision — these can burn credits fast.
 5. If any step requires a paid subscription **other than** GCP credits or the Gemini 2.5 Flash free/AI-Studio tier, **stop and flag it** rather than proceeding.
 
-## Target Architecture (Mirrors Mentor Repo Patterns)
+## Target Architecture
 | GCP Service | Purpose |
 |---|---|
 | Cloud Run | Hosts the FastAPI backend (serverless, scale-to-zero) |

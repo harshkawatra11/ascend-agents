@@ -6,7 +6,7 @@
 - **Explanation** (why, in plain language) → Gemini 2.5 Flash. **Gemini never generates the prediction numbers** — it explains numbers already computed deterministically, which keeps the system auditable and avoids hallucinated statistics.
 
 ## Gemini Integration — "Ask SwasthyaGrid"
-Modeled on the mentor repo's tool-calling agent loop (`app/agents/health_agent.py`):
+Implemented as a tool-calling agent loop (`app/agents/health_agent.py`):
 
 - Model: `gemini-2.5-flash` via Google AI Studio API key (`GEMINI_API_KEY` env var).
 - Agent loop: user message → Gemini decides which tool(s) to call (`get_medicine_stock`, `get_forecast`, `get_recommendations`, `get_facility_detail`, `get_causal_chain`, ...) → tools execute against the same `services/` layer used by REST endpoints → results fed back to Gemini → final natural-language answer.

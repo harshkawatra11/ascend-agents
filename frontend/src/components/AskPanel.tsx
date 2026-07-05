@@ -15,26 +15,22 @@ export function AskPanel() {
   const [response, setResponse] = useState<AskResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8080";
-
   async function ask() {
     if (!message.trim()) return;
     setLoading(true);
     setError(null);
     setResponse(null);
     try {
-      const res = await fetch(`${apiBase}/api/v1/ask`, {
+      const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
-      if (!res.ok) throw new Error(`Backend responded ${res.status}`);
+      if (!res.ok) throw new Error(`Ask route responded ${res.status}`);
       const data = await res.json();
       setResponse(data);
     } catch {
-      setError(
-        "Couldn't reach SwasthyaGrid's backend. Start the FastAPI server (uvicorn app.main:app) and set GEMINI_API_KEY."
-      );
+      setError("Ask SwasthyaGrid couldn't process that — please try again.");
     } finally {
       setLoading(false);
     }

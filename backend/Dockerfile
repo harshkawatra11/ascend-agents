@@ -1,4 +1,4 @@
-# Multi-stage build — mirrors the mentor reference repo's pattern.
+# Multi-stage build for a lean, non-root production image.
 FROM python:3.12-slim AS builder
 
 WORKDIR /build
