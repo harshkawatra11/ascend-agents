@@ -232,18 +232,20 @@
 <section class="slide">
   <div class="rail">
     <div class="eyebrow"><span class="idx">01</span> The Problem</div>
-    <div class="rubric">Problem–Solution Fit · 20%</div>
   </div>
   <div class="content">
     <h1 class="display">PHCs run blind — and no one <span class="accent it">upstream</span> can see it.</h1>
     <p class="subhead"><span class="lead">Medicine stock-outs, unmanaged footfall, bed shortages, absent doctors</span> — tracked on paper, at each centre, in isolation. By the time a district officer hears about a crisis, it has already happened.</p>
 
-    <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:44px; margin-top:34px; align-items:center;">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:26px 34px;">
-        <div class="stat"><div class="num" style="font-size:60px;">50+</div><div class="lbl">Health centres one district<br>officer must watch at once</div></div>
-        <div class="stat"><div class="num" style="font-size:60px;">0</div><div class="lbl">Real-time visibility into<br>district-wide stock today</div></div>
-        <div class="stat"><div class="num" style="font-size:60px;">3<span style="font-size:34px;">+ days</span></div><div class="lbl">A stock-out runs before<br>it's even noticed</div></div>
-        <div class="stat"><div class="num" style="font-size:60px; color:var(--critical);">↑</div><div class="lbl">Wait times &amp; emergency<br>procurement, every time</div></div>
+    <div style="display:grid; grid-template-columns: 1.15fr 1fr; gap:44px; margin-top:28px; align-items:center;">
+      <div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:22px 34px;">
+          <div class="stat"><div class="num" style="font-size:52px;">50+</div><div class="lbl">Health centres one district<br>officer must watch at once</div></div>
+          <div class="stat"><div class="num" style="font-size:52px;">0</div><div class="lbl">Real-time visibility into<br>district-wide stock today</div></div>
+          <div class="stat"><div class="num" style="font-size:52px;">3<span style="font-size:30px;">+ days</span></div><div class="lbl">A stock-out runs before<br>it's even noticed</div></div>
+          <div class="stat"><div class="num" style="font-size:52px; color:var(--critical);">↑</div><div class="lbl">Wait times &amp; emergency<br>procurement, every time</div></div>
+        </div>
+        <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin-top:20px; max-width:480px;">Inventory registers, OPD counts and duty rosters live in separate paper ledgers at each of the 50+ PHCs/CHCs in a district. Nothing rolls up. A district health officer has no way to compare Facility A's stock against Facility B's surplus — so an ORS shortage at one centre and a surplus six kilometres away simply never meet.</p>
       </div>
 
       <!-- depletion chart -->
@@ -508,9 +510,9 @@
         </div>
       </div>
     </div>
-    <div style="display:flex; justify-content:space-between; margin-top:12px;">
-      <span class="mono" style="font-size:10.5px; color:var(--ink-soft);">10 routed views · role switcher · ⌘K command palette · persistent “Ask SwasthyaGrid”</span>
-      <span class="mono" style="font-size:10.5px; color:var(--healthy);">● live in production</span>
+    <div style="margin-top:14px; padding:12px 16px; background:var(--paper-dim); border:1px solid var(--hairline);">
+      <span class="mono" style="font-size:10px; letter-spacing:0.1em; color:var(--clay);">ASK SWASTHYAGRID · Gemini 2.5 Flash</span>
+      <span style="font-size:12.5px; color:var(--ink-soft); margin-left:8px;">A chat panel on every screen where an administrator can ask, in plain English, "which PHCs risk an ORS stock-out this week?" Gemini calls back into the same forecast/recommendation services the dashboard uses, so its answer is grounded in the live numbers on screen — it narrates them, it does not compute or guess new ones.</span>
     </div>
   </div>
   <div class="footer"><span>SwasthyaGrid AI</span><span class="brand">District Health Operations Center</span><span>06 · 12</span></div>
@@ -580,28 +582,17 @@
     <div class="eyebrow"><span class="idx">08</span> AI &amp; Technical Execution</div>
     <div class="rubric">AI / Technical Execution · 25%</div>
   </div>
-  <div class="content vc">
+  <div class="content">
     <h1 class="display">The AI does <span class="accent it">real work</span>, not decoration.</h1>
+    <p class="subhead">Three distinct engines, each doing a job no template dashboard does.</p>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr 0.9fr; gap:22px; margin-top:28px;">
-      <div style="border:1px solid var(--hairline); padding:16px 18px; background:var(--paper-dim);">
-        <div class="mono" style="font-size:9.5px; letter-spacing:0.1em; color:var(--clay);">FORECAST ENGINE</div>
-        <div class="serif" style="font-size:18px; margin-top:8px;">Confidence, not guesses</div>
-        <div style="font-size:12.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;">Every forecast returns <span class="mono" style="font-size:11px;">{value, confidence, factors[]}</span> — a first-class API contract. Never a bare number.</div>
-      </div>
-      <div style="border:1px solid var(--hairline); padding:16px 18px; background:var(--paper-dim);">
-        <div class="mono" style="font-size:9.5px; letter-spacing:0.1em; color:var(--clay);">OPTIMIZATION</div>
-        <div class="serif" style="font-size:18px; margin-top:8px;">Haversine redistribution</div>
-        <div style="font-size:12.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;">Ranks donor facilities by real distance &amp; surplus, computes an exact transfer quantity + weighted confidence. A genuine optimisation.</div>
-      </div>
-      <div style="border:1px solid var(--hairline); padding:16px 18px; background:#F0E7D6;">
-        <div class="mono" style="font-size:9.5px; letter-spacing:0.1em; color:var(--clay);">GEMINI 2.5 FLASH</div>
-        <div class="serif" style="font-size:18px; margin-top:8px;">Explains, never invents</div>
-        <div style="font-size:12.5px; color:var(--ink-soft); margin-top:8px; line-height:1.5;">A tool-calling agent grounded in live district data. Answers in plain language with a confidence indicator.</div>
-      </div>
+    <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+      <p style="font-size:13px; color:var(--ink-soft); line-height:1.55;"><span class="kw">Forecast engine</span> — consumption and occupancy history run through a deterministic depletion/demand model for every medicine and bed in every facility. The output is never a bare number: it is always <span class="mono" style="font-size:11.5px;">{value, confidence, factors[]}</span>, a first-class API contract, so a "3.4 days remaining" figure always ships with why it's 3.4 and how sure the system is.</p>
+      <p style="font-size:13px; color:var(--ink-soft); line-height:1.55;"><span class="kw">Redistribution optimizer</span> — when a facility crosses its risk threshold, a haversine great-circle search ranks every other facility in the district by real distance and current surplus, then computes the exact quantity to move and a confidence score weighted by distance, surplus margin and corroborating demand signals (weather, disease clusters). This is graph search over live data, not a lookup table.</p>
+      <p style="font-size:13px; color:var(--ink-soft); line-height:1.55;"><span class="kw">Ask SwasthyaGrid</span> — a <span class="kw">Gemini 2.5 Flash</span> agent that calls back into the same forecast and recommendation services as the dashboard, then narrates the results in plain language with a confidence indicator. It is grounded and read-only by design: it can explain a number the engines already produced, but it can never generate a new prediction or trigger an action itself.</p>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:34px; margin-top:26px; align-items:center;">
+    <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:34px; margin-top:20px; align-items:center;">
       <!-- redistribution mini-map -->
       <div style="border:1px solid var(--hairline); background:var(--paper-dim); padding:14px 18px;">
         <div class="mono" style="font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);">Optimizer output · one recommended edge</div>
@@ -664,27 +655,16 @@
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:26px;">
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:26px; margin-top:22px;">
       <!-- live now -->
       <div>
-        <div class="mono" style="font-size:10px; letter-spacing:0.14em; color:var(--healthy); margin-bottom:10px;">● LIVE TODAY</div>
-        <div style="display:flex; flex-wrap:wrap; gap:7px;">
-          <span class="chip"><span class="d" style="background:var(--healthy)"></span>Cloud Run</span>
-          <span class="chip"><span class="d" style="background:var(--healthy)"></span>Firestore</span>
-          <span class="chip"><span class="d" style="background:var(--healthy)"></span>Secret Manager</span>
-          <span class="chip"><span class="d" style="background:var(--healthy)"></span>Cloud Build</span>
-          <span class="chip"><span class="d" style="background:var(--healthy)"></span>Vercel + GitHub CI</span>
-        </div>
+        <div class="mono" style="font-size:10px; letter-spacing:0.14em; color:var(--healthy); margin-bottom:8px;">● LIVE TODAY</div>
+        <p style="font-size:12px; color:var(--ink-soft); line-height:1.55;"><span class="kw">Cloud Run</span> hosts the FastAPI backend, scaled to zero between requests so idle cost is near-nil. <span class="kw">Firestore</span> is the district's live data store. <span class="kw">Secret Manager</span> injects the Gemini key into the container at runtime — it never touches source control. <span class="kw">Cloud Build</span> builds the container image on every deploy, and <span class="kw">Vercel + GitHub Actions CI</span> lint, test and ship the frontend on every push to <span class="mono" style="font-size:10.5px;">main</span>.</p>
       </div>
       <!-- scales to -->
       <div>
-        <div class="mono" style="font-size:10px; letter-spacing:0.14em; color:var(--brass); margin-bottom:10px;">↑ SCALE PATH</div>
-        <div style="display:flex; flex-wrap:wrap; gap:7px;">
-          <span class="chip"><span class="d" style="background:var(--brass)"></span>BigQuery</span>
-          <span class="chip"><span class="d" style="background:var(--brass)"></span>Vertex AI</span>
-          <span class="chip"><span class="d" style="background:var(--brass)"></span>Pub/Sub</span>
-          <span class="chip"><span class="d" style="background:var(--brass)"></span>Cloud Scheduler</span>
-        </div>
+        <div class="mono" style="font-size:10px; letter-spacing:0.14em; color:var(--brass); margin-bottom:8px;">↑ SCALE PATH</div>
+        <p style="font-size:12px; color:var(--ink-soft); line-height:1.55;"><span class="kw">BigQuery</span> becomes the analytics warehouse once we're combining years of district data across facilities. <span class="kw">Vertex AI</span> is where the deterministic forecast engine graduates into trained XGBoost/LightGBM models. <span class="kw">Pub/Sub</span> carries real-time facility updates instead of periodic polling, and <span class="kw">Cloud Scheduler</span> triggers nightly forecast recomputation across every centre in the network.</p>
       </div>
     </div>
 
@@ -735,10 +715,7 @@
     <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:32px; align-items:center;">
       <div>
         <div class="mono" style="font-size:10px; letter-spacing:0.14em; color:var(--clay); margin-bottom:10px;">WHY WE WIN</div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <span class="chip">Predictive</span><span class="chip">Prescriptive</span><span class="chip">Explainable</span><span class="chip">Human-Governed</span>
-        </div>
-        <p style="font-size:12.5px; color:var(--ink-soft); margin-top:12px; line-height:1.5;">Most teams ship “AI + a dashboard.” We built the operations layer underneath it — and <span class="kw">deployed it live on Google Cloud</span>.</p>
+        <p style="font-size:12.5px; color:var(--ink-soft); line-height:1.55;">We forecast <span class="kw">before</span> a shortage, prescribe a <span class="kw">concrete</span> transfer instead of a warning, attach a <span class="kw">confidence score</span> to every claim, and require a <span class="kw">human decision</span> before anything moves. Most teams ship "AI + a dashboard." We built the operations layer underneath it — and <span class="kw">deployed it live on Google Cloud</span>.</p>
       </div>
       <div style="text-align:right;">
         <div class="serif it" style="font-size:19px; color:var(--ink);">“OH — it works<br>in production.”</div>
@@ -754,14 +731,13 @@
   <svg style="position:absolute; inset:0; width:100%; height:100%; opacity:0.4;" preserveAspectRatio="none">
     <rect width="100%" height="100%" fill="url(#grid)"/>
   </svg>
-  <div style="position:relative; z-index:2;">
-    <div class="eyebrow" style="margin-bottom:22px;">Thank You</div>
-    <h1 class="serif" style="font-style:italic; font-weight:600; font-size:72px; line-height:1;">SwasthyaGrid<span style="color:var(--clay)"> AI</span></h1>
-    <p class="serif" style="font-size:22px; color:var(--ink-soft); margin-top:16px;">An AI District Health <span class="it" style="color:var(--clay)">Operations Center</span></p>
+  <div style="position:relative; z-index:2; text-align:center; display:flex; flex-direction:column; align-items:center;">
+    <h1 class="serif" style="font-style:italic; font-weight:700; font-size:118px; line-height:0.95; color:var(--ink);">Thank <span style="color:var(--clay)">You</span></h1>
+    <p class="mono" style="font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink-soft); margin-top:22px;">SwasthyaGrid AI · An AI District Health Operations Center</p>
 
-    <div style="width:64px; height:2px; background:var(--clay); margin:34px 0 30px;"></div>
+    <div style="width:64px; height:2px; background:var(--clay); margin:30px 0 30px;"></div>
 
-    <div style="display:flex; gap:70px;">
+    <div style="display:flex; gap:80px;">
       <div>
         <div class="serif" style="font-size:19px; font-weight:600;">Harsh Kawatra</div>
         <div class="mono" style="font-size:12px; color:var(--ink-soft); margin-top:5px;">harshkawatra11@gmail.com</div>
@@ -772,11 +748,6 @@
         <div class="mono" style="font-size:12px; color:var(--ink-soft); margin-top:5px;">dayita.arora22@gmail.com</div>
         <div class="mono" style="font-size:11px; color:var(--ink-faint); margin-top:2px;">Ramjas College · B.Sc Statistics</div>
       </div>
-    </div>
-
-    <div style="display:flex; gap:12px; margin-top:38px;">
-      <span class="chip"><span class="d" style="background:var(--healthy)"></span>swasthyagrid.vercel.app</span>
-      <span class="chip">github.com/harshkawatra11/SwasthyaGrid-gdg-buildwithai</span>
     </div>
   </div>
   <div class="footer"><span>SwasthyaGrid AI</span><span class="brand">Harsh Kawatra &amp; Dayita Arora · GDG BuildWithAI</span><span>12 · 12</span></div>
