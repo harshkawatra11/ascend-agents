@@ -14,4 +14,10 @@ If you're picking this up fresh, read in this order:
 - GitHub: public repo `harshkawatra11/SwasthyaGrid-gdg-buildwithai`, commit at each checkpoint listed in `memory/current-task.md`.
 
 ## State as of end of Session 1
-Docs + memory scaffolding committed. Frontend/backend code not yet written — see `memory/next-tasks.md`.
+Full vertical slice built and pushed: docs, memory, frontend dashboard (Next.js, mock data, verified in-browser), backend (FastAPI, verified via curl/pytest), Gemini Ask feature (coded, fallback verified, no live key set), deployment scaffolding (Docker/scripts committed; CI/CD workflow file NOT yet pushed — see below).
+
+## Two things to do next, in order
+1. Run `gh auth refresh -h github.com -s workflow` (device-code flow), then `git add .github/workflows/ci-cd.yml && git commit -m "ci: add workflow" && git push` — the workflow file exists locally but isn't committed because the push was rejected without this scope.
+2. Add `GEMINI_API_KEY` to `backend/.env` to make "Ask SwasthyaGrid" live end-to-end; everything else already works without it.
+
+See `memory/next-tasks.md` for the fuller backlog.

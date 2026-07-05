@@ -1,0 +1,143 @@
+<div align="center">
+
+# SwasthyaGrid AI
+
+### *An AI District Health Operations Center*
+
+**Predictive · Prescriptive · Explainable · Human-Governed**
+
+Built by **Harsh Kawatra** & **Dayita Arora** for GDG BuildWithAI
+
+[![Frontend](https://img.shields.io/badge/frontend-Next.js%20%2B%20TypeScript-4a433a?style=flat-square)](frontend)
+[![Backend](https://img.shields.io/badge/backend-FastAPI%20%2B%20Python-4a433a?style=flat-square)](backend)
+[![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-b5502e?style=flat-square)](docs/05-ai-engine.md)
+[![Cloud](https://img.shields.io/badge/cloud-Google%20Cloud-8a6d3b?style=flat-square)](docs/09-gcp-deployment.md)
+[![License](https://img.shields.io/badge/docs--first-workflow-3f6b4a?style=flat-square)](docs)
+
+</div>
+
+---
+
+## The Problem
+
+PHCs and CHCs across India face recurring operational gaps — medicine stock-outs, unmanaged patient footfall, bed unavailability, unpredictable doctor attendance — tracked manually, with no real-time visibility. The result: shortages, overloaded staff, and under-resourced facilities that nobody at the district level sees coming.
+
+## The Idea
+
+**Think of it as Google Maps for district healthcare operations.** Instead of routing cars, SwasthyaGrid routes medicine, doctors, beds, and testing kits across an entire district — before a shortage happens, not after.
+
+Legacy systems tell you *what happened*. SwasthyaGrid tells you:
+
+| | |
+|---|---|
+| 🔮 **What will happen** | Forecasted stock-outs, footfall spikes, bed occupancy, doctor absence risk |
+| 🧭 **Why** | Every prediction ships with its contributing factors and a confidence score |
+| ✅ **What to do** | A concrete, ranked resource-redistribution recommendation |
+
+## The Core Principle: AI Proposes, Humans Decide
+
+SwasthyaGrid never executes an action on its own. Every recommendation surfaces as:
+
+```
+┌─────────────────────────────────────────────┐
+│  Stock Transfer · PHC Sector-12 → Rural-14   │
+│                                               │
+│  Paracetamol · 250 strips           96% ●●●● │
+│                                    CONFIDENCE │
+│                                               │
+│  — Projected stock depletion in 3.4 days     │
+│  — Rain forecast increasing fever cases      │
+│  — Recent dengue trend nearby                │
+│  — PHC Sector-12 holds surplus, 6 km away    │
+│                                               │
+│  [ Approve ]   [ Modify ]   [ Reject ]       │
+└─────────────────────────────────────────────┘
+```
+
+A district administrator always has the final word. This is what makes SwasthyaGrid a **decision-support system**, not an autonomous agent — the framing real public health administrators actually need.
+
+## What's Inside
+
+- **District Overview** — live risk, footfall, beds, doctors, medicine KPIs
+- **District Map** — every PHC/CHC as a node, colored by risk (🟢🟡🟠🔴)
+- **AI Recommendations** — confidence-scored, explainable, Approve/Reject/Modify
+- **Resource Transfers** — a running log of approved district-wide redistribution
+- **Forecasts** — 7-day footfall, bed occupancy, medicine depletion charts
+- **Performance Scorecards** — per-facility inventory, attendance, diagnostics, wait-time, forecast accuracy
+- **Ask SwasthyaGrid** — a Gemini 2.5 Flash copilot that explains the data (never invents it)
+
+## Design
+
+No generic blue-purple SaaS gradients. SwasthyaGrid is styled as an **editorial, agency-grade operations console** — warm beige/parchment surfaces, a serif display face paired with a clean grotesk sans, and color reserved exclusively for risk signaling. See [`docs/08-design-system.md`](docs/08-design-system.md).
+
+## Architecture
+
+```
+Next.js Dashboard  ──REST──▶  FastAPI Backend
+                                   │
+                    ┌──────────────┼──────────────┐
+                    ▼              ▼              ▼
+              Forecast Engine  Recommendation   Gemini 2.5 Flash
+              (deterministic)  Engine (search/   (explanation only,
+                                rank/propose)     never prediction)
+```
+
+Every forecast and recommendation carries `{ value, confidence, factors[] }` as a first-class API contract — not an afterthought. Full detail in [`docs/01-architecture.md`](docs/01-architecture.md).
+
+## Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Frontend | Next.js (App Router), TypeScript, Tailwind CSS, Framer Motion, Recharts, Leaflet |
+| Backend | FastAPI, Python 3.12, Pydantic Settings, clean-architecture layering |
+| AI | Gemini 2.5 Flash (AI Studio) — tool-calling agent for explanation |
+| Forecasting | Deterministic mock engine now; XGBoost/LightGBM designed for production (`docs/06-forecasting.md`) |
+| Cloud (designed) | Cloud Run, Firestore, Secret Manager, BigQuery, Vertex AI (`docs/09-gcp-deployment.md`) |
+
+## Documentation-First
+
+Every decision, contract, and flow is documented **before** code, and kept current in [`docs/`](docs) and [`memory/`](memory) so the repository — not this conversation — is the source of truth:
+
+- [`docs/00-vision.md`](docs/00-vision.md) — product vision & philosophy
+- [`docs/01-architecture.md`](docs/01-architecture.md) — system architecture
+- [`docs/02-data-model.md`](docs/02-data-model.md) — domain entities
+- [`docs/03-api-contract.md`](docs/03-api-contract.md) — REST API contract
+- [`docs/04-ui-flows.md`](docs/04-ui-flows.md) — dashboard layout & flows
+- [`docs/05-ai-engine.md`](docs/05-ai-engine.md) — prediction vs. explanation split
+- [`docs/06-forecasting.md`](docs/06-forecasting.md) — forecasting approach
+- [`docs/07-recommendation-engine.md`](docs/07-recommendation-engine.md) — redistribution algorithm
+- [`docs/08-design-system.md`](docs/08-design-system.md) — visual language
+- [`docs/09-gcp-deployment.md`](docs/09-gcp-deployment.md) — cloud deployment plan
+- [`docs/10-demo-script.md`](docs/10-demo-script.md) — the demo narrative
+
+[`memory/`](memory) tracks live project state (`current-task.md`, `decision-log.md`, `handoff.md`, ...) so anyone can pick this up mid-flight.
+
+## Running Locally
+
+```bash
+# Backend — FastAPI, mock data, no GCP required
+cd backend
+python -m venv .venv && source .venv/Scripts/activate  # or .venv/bin/activate on macOS/Linux
+pip install -r requirements.txt
+cp .env.example .env   # optionally add GEMINI_API_KEY for the live Ask feature
+uvicorn app.main:app --reload --port 8080
+
+# Frontend — Next.js dashboard
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`. The dashboard works fully on mock data; the Ask panel activates automatically once `GEMINI_API_KEY` is set in `backend/.env`.
+
+## Credits & Acknowledgements
+
+Architecture and deployment patterns (clean layering, Cloud Run, Secret Manager, CI/CD shape) were studied from our mentor's workshop reference repo, [`shivkumarsah/GDG-BuildWithAI_smart-health-ai-platform`](https://github.com/shivkumarsah/GDG-BuildWithAI_smart-health-ai-platform) — reused as engineering patterns, not copied code.
+
+---
+
+<div align="center">
+
+*SwasthyaGrid AI — because a district health system should know about a stock-out three days before it happens, not three days after.*
+
+</div>
