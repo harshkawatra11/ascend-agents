@@ -58,13 +58,22 @@ A district administrator always has the final word. This is what makes SwasthyaG
 
 ## What's Inside
 
-- **District Overview** — live risk, footfall, beds, doctors, medicine KPIs
-- **District Map** — every PHC/CHC as a node, colored by risk (🟢🟡🟠🔴)
-- **AI Recommendations** — confidence-scored, explainable, Approve/Reject/Modify
-- **Resource Transfers** — a running log of approved district-wide redistribution
-- **Forecasts** — 7-day footfall, bed occupancy, medicine depletion charts
-- **Performance Scorecards** — per-facility inventory, attendance, diagnostics, wait-time, forecast accuracy
-- **Ask SwasthyaGrid** — a Gemini 2.5 Flash copilot that explains the data (never invents it)
+A real dashboard application — persistent sidebar + topbar shell, 10 routed views, not a scroll page:
+
+| Route | What it shows |
+|---|---|
+| **Overview** | Command-center KPIs, mini district map, live risk donut, top alerts & pending recommendations |
+| **Recommendations** | The human-in-the-loop workspace — filterable, confidence-scored, Approve/Reject/Modify |
+| **Inventory** | Medicine stock-out forecasts + stock-transfer recommendations |
+| **Footfall** | 7-day patient footfall forecast + demographic breakdown |
+| **Beds** | Occupancy forecasts (today/tomorrow/next week) + bed-redirect recommendations |
+| **Doctors** | Attendance risk, absence patterns, patient-delay impact + staff-transfer recommendations |
+| **Diagnostics** | Test/equipment availability + redirect suggestions |
+| **District Map** | Every PHC/CHC as a node, colored by risk (🟢🟡🟠🔴), click for facility detail |
+| **Facilities** | Sortable directory with a detail drawer per facility |
+| **Analytics** | Causal "why" chains, AI timeline, performance scorecards |
+
+Plus a **role switcher** (District Administrator / PHC Staff / State Health Officer — gates who can approve), a **⌘K command palette**, and a persistent **Ask SwasthyaGrid** panel (Gemini 2.5 Flash — explains the data, never invents it). Approving a recommendation live-updates its status everywhere, drops the affected facility's risk level on the map, and lands in the Resource Transfers log — no page refresh.
 
 ## Design
 

@@ -11,9 +11,25 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { footfallForecast, footfallBreakdown } from "@/data/district";
 
-export function ForecastChart() {
+interface Point {
+  day: string;
+  predicted: number;
+  actual?: number;
+}
+
+interface Breakdown {
+  label: string;
+  value: number;
+}
+
+export function ForecastChart({
+  series,
+  breakdown,
+}: {
+  series: Point[];
+  breakdown: Breakdown[];
+}) {
   return (
     <div className="grid gap-6 md:grid-cols-[1.4fr_1fr]">
       <div className="border border-hairline bg-paper-dim/40 p-5">
@@ -21,7 +37,7 @@ export function ForecastChart() {
           Footfall Forecast — 7 Days
         </p>
         <ResponsiveContainer width="100%" height={220}>
-          <AreaChart data={footfallForecast}>
+          <AreaChart data={series}>
             <CartesianGrid stroke="#D8CBB4" strokeDasharray="2 4" vertical={false} />
             <XAxis
               dataKey="day"
@@ -63,7 +79,7 @@ export function ForecastChart() {
           Tomorrow's Breakdown
         </p>
         <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={footfallBreakdown} layout="vertical" margin={{ left: 10 }}>
+          <BarChart data={breakdown} layout="vertical" margin={{ left: 10 }}>
             <XAxis type="number" hide />
             <YAxis
               type="category"

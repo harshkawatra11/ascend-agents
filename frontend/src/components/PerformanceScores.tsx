@@ -1,14 +1,23 @@
-import { facilities } from "@/data/district";
+export interface PerformanceRow {
+  facility_id: string;
+  facility_name: string;
+  overall: number;
+  inventory: number;
+  attendance: number;
+  diagnostics: number;
+  patient_wait: number;
+  forecast_accuracy: number;
+}
 
-const subScores: { key: keyof typeof facilities[number]["performance"]; label: string }[] = [
+const subScores: { key: keyof PerformanceRow; label: string }[] = [
   { key: "inventory", label: "Inventory" },
   { key: "attendance", label: "Attendance" },
   { key: "diagnostics", label: "Diagnostics" },
-  { key: "patientWait", label: "Patient Wait" },
-  { key: "forecastAccuracy", label: "Forecast Accuracy" },
+  { key: "patient_wait", label: "Patient Wait" },
+  { key: "forecast_accuracy", label: "Forecast Accuracy" },
 ];
 
-export function PerformanceScores() {
+export function PerformanceScores({ rows }: { rows: PerformanceRow[] }) {
   return (
     <div className="overflow-x-auto border border-hairline">
       <table className="w-full text-sm">
@@ -31,18 +40,18 @@ export function PerformanceScores() {
           </tr>
         </thead>
         <tbody>
-          {facilities
+          {rows
             .slice()
-            .sort((a, b) => a.performance.overall - b.performance.overall)
+            .sort((a, b) => a.overall - b.overall)
             .map((f) => (
-              <tr key={f.id} className="border-b border-hairline last:border-0">
-                <td className="px-4 py-3 text-ink font-medium">{f.name}</td>
+              <tr key={f.facility_id} className="border-b border-hairline last:border-0">
+                <td className="px-4 py-3 text-ink font-medium">{f.facility_name}</td>
                 <td className="px-4 py-3 text-right tabular font-serif-display text-accent-clay">
-                  {f.performance.overall}
+                  {f.overall}
                 </td>
                 {subScores.map((s) => (
                   <td key={s.key} className="px-4 py-3 text-right tabular text-ink-soft">
-                    {f.performance[s.key]}
+                    {f[s.key]}
                   </td>
                 ))}
               </tr>

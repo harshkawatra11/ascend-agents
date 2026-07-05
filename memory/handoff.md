@@ -13,7 +13,10 @@ If you're picking this up fresh, read in this order:
 - No spending beyond GCP credits + Gemini free/AI-Studio tier — flag anything else before proceeding.
 - GitHub: public repo `harshkawatra11/SwasthyaGrid-gdg-buildwithai`, commit at each checkpoint listed in `memory/current-task.md`.
 
-## State as of end of Session 1
+## State as of end of Session 2
+The frontend is now a real multi-page dashboard app (not a single scroll page): `(dashboard)` route group, sidebar+topbar shell, 10 routed pages, role switcher, API-client-with-mock-fallback, lifted recommendation state, live risk-downgrade on approval, ⌘K palette, toasts, drawers. Verified end-to-end in-browser against the live FastAPI backend. Backend and docs/memory structure otherwise unchanged from Session 1.
+
+## State as of end of Session 1 (superseded above for frontend)
 Full vertical slice built and pushed: docs, memory, frontend dashboard (Next.js, mock data, verified in-browser), backend (FastAPI, verified via curl/pytest), Gemini Ask feature (coded, fallback verified, no live key set), deployment scaffolding (Docker/scripts committed; CI/CD workflow file NOT yet pushed — see below).
 
 ## Two things to do next, in order

@@ -172,3 +172,10 @@ export const riskLabel: Record<RiskLevel, string> = {
   stress: "Resource Stress",
   critical: "Critical",
 };
+
+const riskOrder: RiskLevel[] = ["critical", "stress", "monitor", "healthy"];
+
+export function downgradeRisk(level: RiskLevel): RiskLevel {
+  const idx = riskOrder.indexOf(level);
+  return riskOrder[Math.min(idx + 1, riskOrder.length - 1)];
+}

@@ -6,7 +6,9 @@
 
 ## Next milestones
 - [ ] Provision a GCP project and confirm the credits-backed billing account (checklist in `docs/09-gcp-deployment.md`) before running `backend/scripts/setup_secrets.sh` / `deploy.sh`.
-- [ ] Wire `RecommendationsPanel` and `ResourceTransfers` frontend components to real backend state (currently separate local `useState`, not lifted/shared — approve action doesn't yet appear in the Resource Transfers log live; acceptable for this prototype demo but worth fixing for a polished walkthrough).
+- [x] ~~Wire `RecommendationsPanel` and `ResourceTransfers` frontend components to real backend state~~ — done in Session 2 via `lib/store.tsx`'s `RecommendationsProvider`.
+- [ ] PHC Staff role is gated (read-only on recommendations) but has no actual inventory/OPD/bed/attendance data-entry UI yet — currently just a framing note in `docs/04-ui-flows.md`. Build it out if the demo needs to show the multi-user story end-to-end.
+- [ ] Facility drawer's live medicine/bed/doctor detail only populates when the FastAPI backend is reachable (`getFacilityDetail` in `lib/api.ts`); consider richer mock fallback data if demoing offline.
 - [ ] Replace mock forecast generators with real XGBoost/LightGBM per `docs/06-forecasting.md`, once historical data exists.
 - [ ] Live Firestore wiring behind `DistrictRepository` (interface is already designed for this swap).
 - [ ] Multilingual i18n, auth/roles — out of scope so far.

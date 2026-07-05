@@ -1,4 +1,6 @@
-import { alerts, facilityById } from "@/data/district";
+import { facilityById, type Alert } from "@/data/district";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { BellOff } from "lucide-react";
 
 const severityColor = {
   info: "var(--color-accent-brass)",
@@ -6,7 +8,13 @@ const severityColor = {
   critical: "var(--color-risk-critical)",
 } as const;
 
-export function AlertsList() {
+export function AlertsList({ alerts }: { alerts: Alert[] }) {
+  if (alerts.length === 0) {
+    return (
+      <EmptyState icon={BellOff} title="No active alerts" detail="The district is currently within safe operating thresholds." />
+    );
+  }
+
   return (
     <div className="space-y-3">
       {alerts.map((a) => (
@@ -20,7 +28,7 @@ export function AlertsList() {
             <span style={{ color: severityColor[a.severity] }}>{a.severity}</span>
           </p>
           <p className="font-serif-display text-base text-ink mt-0.5">{a.title}</p>
-          <p className="text-sm text-ink-soft">{a.detail}</p>
+          {a.detail && <p className="text-sm text-ink-soft">{a.detail}</p>}
         </div>
       ))}
     </div>

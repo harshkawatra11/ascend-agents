@@ -47,3 +47,11 @@ Define in `tailwind.config.ts` under `theme.extend.colors` matching the token ta
 
 ## Reference Mood
 Financial Times / The Economist data journalism pages, Bloomberg terminal density, high-end policy-report PDFs — applied to a live operational dashboard.
+
+## App Shell (added — multi-view dashboard)
+- **Sidebar** (`components/shell/Sidebar.tsx`): fixed 240px rail, `paper-dim` background, grouped nav (Command / Operations / District). Active route: 2px `accent-clay` left border + `parchment` fill.
+- **Topbar** (`components/shell/Topbar.tsx`): sticky, `paper` background with backdrop-blur, houses the ⌘K search trigger and `RoleSwitcher`.
+- **Drawers/overlays** (`Drawer.tsx`, `CommandPalette.tsx`): same hairline-border, no-gradient treatment as cards; slide/fade via Framer Motion, never bounce.
+- **Toast** (`ui/Toast.tsx`): dark `ink` chip, bottom-left, auto-dismiss ~3.5s — confirms every Approve/Reject/Modify action.
+- **Icons**: `lucide-react`, `strokeWidth={1.5–1.75}`, sized 14–20px — thin-line, editorial weight, never filled/bold icon sets.
+- **Risk donut** (`RiskDonut.tsx`): Recharts `PieChart` using only the four semantic risk colors, no additional palette introduced.

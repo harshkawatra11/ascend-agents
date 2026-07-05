@@ -1,5 +1,3 @@
-import { districtKpis } from "@/data/district";
-
 function Kpi({
   label,
   value,
@@ -20,23 +18,30 @@ function Kpi({
   );
 }
 
-export function KpiStrip() {
-  const k = districtKpis;
+export interface KpiData {
+  todaysRisk: { value: string; detail: string };
+  footfall: { value: number; confidence: number };
+  bedOccupancy: { value: string; nextWeek: string };
+  doctorsAbsent: { value: number; detail: string };
+  medicineRisk: { value: number; detail: string };
+}
+
+export function KpiStrip({ kpis }: { kpis: KpiData }) {
   return (
     <div className="flex flex-wrap gap-3">
-      <Kpi label="Today's Risk" value={k.todaysRisk.value} detail={k.todaysRisk.detail} />
+      <Kpi label="Today's Risk" value={kpis.todaysRisk.value} detail={kpis.todaysRisk.detail} />
       <Kpi
         label="Footfall (Tomorrow)"
-        value={k.footfall.value}
-        detail={`${k.footfall.confidence}% confidence`}
+        value={kpis.footfall.value}
+        detail={`${kpis.footfall.confidence}% confidence`}
       />
       <Kpi
         label="Bed Occupancy"
-        value={k.bedOccupancy.value}
-        detail={`Next week: ${k.bedOccupancy.nextWeek}`}
+        value={kpis.bedOccupancy.value}
+        detail={`Next week: ${kpis.bedOccupancy.nextWeek}`}
       />
-      <Kpi label="Doctors Absent" value={k.doctorsAbsent.value} detail={k.doctorsAbsent.detail} />
-      <Kpi label="Medicine at Risk" value={k.medicineRisk.value} detail={k.medicineRisk.detail} />
+      <Kpi label="Doctors Absent" value={kpis.doctorsAbsent.value} detail={kpis.doctorsAbsent.detail} />
+      <Kpi label="Medicine at Risk" value={kpis.medicineRisk.value} detail={kpis.medicineRisk.detail} />
     </div>
   );
 }

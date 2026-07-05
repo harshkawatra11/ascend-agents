@@ -1,14 +1,22 @@
 "use client";
 
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from "react-leaflet";
-import { facilities, riskColor, riskLabel } from "@/data/district";
+import { riskColor, riskLabel, type Facility } from "@/data/district";
 import "leaflet/dist/leaflet.css";
 
-export function DistrictMap() {
+export function DistrictMap({
+  facilities,
+  height = 420,
+  onSelect,
+}: {
+  facilities: Facility[];
+  height?: number;
+  onSelect?: (facility: Facility) => void;
+}) {
   const center: [number, number] = [26.88, 75.8];
 
   return (
-    <div className="border border-hairline h-[420px] overflow-hidden">
+    <div className="border border-hairline overflow-hidden" style={{ height }}>
       <MapContainer
         center={center}
         zoom={10}
@@ -24,6 +32,7 @@ export function DistrictMap() {
             key={f.id}
             center={[f.lat, f.lng]}
             radius={10}
+            eventHandlers={onSelect ? { click: () => onSelect(f) } : undefined}
             pathOptions={{
               color: riskColor[f.riskLevel],
               fillColor: riskColor[f.riskLevel],

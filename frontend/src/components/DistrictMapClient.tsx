@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import type { Facility } from "@/data/district";
 
 const DistrictMap = dynamic(
   () => import("./DistrictMap").then((m) => m.DistrictMap),
@@ -14,6 +15,14 @@ const DistrictMap = dynamic(
   }
 );
 
-export function DistrictMapClient() {
-  return <DistrictMap />;
+export function DistrictMapClient({
+  facilities,
+  height,
+  onSelect,
+}: {
+  facilities: Facility[];
+  height?: number;
+  onSelect?: (facility: Facility) => void;
+}) {
+  return <DistrictMap facilities={facilities} height={height} onSelect={onSelect} />;
 }
