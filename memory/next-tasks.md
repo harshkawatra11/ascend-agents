@@ -1,7 +1,7 @@
 # Next Tasks
 
 ## Immediate / small
-- [ ] Push `.github/workflows/ci-cd.yml` — currently untracked because the `gh` OAuth token lacks the `workflow` scope. Run `gh auth refresh -h github.com -s workflow`, complete the device-code flow, then `git add .github/workflows/ci-cd.yml && git commit && git push`. The file exists at that path locally but is git-untracked/uncommitted.
+- [x] ~~Push `.github/workflows/ci-cd.yml`~~ — done; user completed `gh auth refresh -s workflow`, pushed in commit `ded6253`.
 - [ ] Add `GEMINI_API_KEY` to `backend/.env` (gitignored) to activate the live "Ask SwasthyaGrid" feature — code is complete and falls back gracefully without it (see [[decision-log]]).
 
 ## Next milestones
