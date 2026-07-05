@@ -35,7 +35,6 @@ class RecommendationService:
         self._seed_extra_recommendations()
 
     def _generate_stock_transfer_recommendations(self) -> None:
-        facilities_by_id = {f["id"]: f for f in self.repo.facilities}
         safety_stock_days = 5
 
         for facility in self.repo.facilities:
