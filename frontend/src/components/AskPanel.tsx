@@ -26,11 +26,14 @@ export function AskPanel() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
       });
-      if (!res.ok) throw new Error(`Ask route responded ${res.status}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(errData?.error || `Ask route responded ${res.status}`);
+      }
       const data = await res.json();
       setResponse(data);
-    } catch {
-      setError("Ask SwasthyaGrid couldn't process that — please try again.");
+    } catch (err: any) {
+      setError(err.message || "Ask SwasthyaGrid couldn't process that — please try again.");
     } finally {
       setLoading(false);
     }

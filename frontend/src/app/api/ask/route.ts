@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ answer: FALLBACK_MESSAGE, confidence: null });
+    return NextResponse.json({ error: FALLBACK_MESSAGE }, { status: 503 });
   }
 
   try {
