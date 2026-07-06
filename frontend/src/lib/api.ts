@@ -247,6 +247,30 @@ export async function getDoctorAttendance() {
   );
 }
 
+export async function get<T>(endpoint: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    throw new Error(`API GET request failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
+}
+
+async function post<T>(endpoint: string, data?: any): Promise<T> {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: data ? JSON.stringify(data) : undefined,
+  });
+  if (!res.ok) {
+    throw new Error(`API POST request failed: ${res.status} ${res.statusText}`);
+  }
+  return res.json();
+}
+
 export async function getDiagnostics() {
   return safeFetch<{ diagnostics: Array<Record<string, unknown>> }>(
     "/api/v1/diagnostics",
@@ -255,18 +279,17 @@ export async function getDiagnostics() {
 }
 
 export async function askSwasthyaGrid(message: string) {
-  try {
-    const res = await fetch("/api/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!res.ok) throw new Error(`ask responded ${res.status}`);
-    return (await res.json()) as { answer: string; confidence?: number };
-  } catch {
-    return null;
+  const res = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || err.detail || `ask responded ${res.status}`);
   }
+  return (await res.json()) as { answer: string; confidence?: number };
 }
 
 export { API_BASE };
