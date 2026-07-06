@@ -1,5 +1,3 @@
-import logging
-import sys
 from pydantic import BaseModel
 
 class LogConfig(BaseModel):
