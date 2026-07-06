@@ -15,8 +15,16 @@ Built for **GDG BuildWithAI** by **Harsh Kawatra, Dayita Arora & Gursimran Kaur*
 **▶ Live Deployment: [swasthyagrid.vercel.app](https://swasthyagrid.vercel.app)** 
 
 [![Live Application](https://img.shields.io/badge/Live_App-swasthyagrid.vercel.app-3f6b4a?style=for-the-badge)](https://swasthyagrid.vercel.app)
-[![Google Cloud](https://img.shields.io/badge/Powered_by-Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](#powered-by-google-technologies)
-[![Gemini AI](https://img.shields.io/badge/Powered_by-Gemini_2.5_Flash-b5502e?style=for-the-badge)](#the-ai-engine-gemini)
+[![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](#powered-by-google-technologies)
+[![Gemini AI](https://img.shields.io/badge/Gemini_2.5_Flash-b5502e?style=for-the-badge&logo=googlebard&logoColor=white)](#the-ai-engine-gemini)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](#2-google-cloud-run-serverless-backend)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+<br/>
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)](#4-firestore-operational-database)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
 </div>
 
