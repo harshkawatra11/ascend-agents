@@ -48,8 +48,8 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-5 py-4 border-t border-hairline text-[11px] text-ink-soft">
-        Harsh Kawatra &amp; Dayita Arora
+      <div className="px-5 py-4 border-t border-hairline text-[10px] tracking-[0.12em] uppercase text-ink-soft/60">
+        GDG BuildWithAI · 2025
       </div>
     </aside>
   );
