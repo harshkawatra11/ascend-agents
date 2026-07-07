@@ -31,3 +31,9 @@ def get_health_agent() -> HealthAgent:
         get_forecast_service(),
         get_recommendation_service(),
     )
+
+
+@lru_cache
+def get_public_agent():
+    from app.agents.public_agent import PublicAgent
+    return PublicAgent(get_settings())
