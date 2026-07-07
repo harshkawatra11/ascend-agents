@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 
 import httpx
-from tenacity import AsyncRetrying, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import Retrying, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from app.core.config import get_settings
 from app.core.exceptions import MapsAPIException
@@ -34,7 +34,7 @@ def _haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> f
     return round(R * c, 2)
 
 
-async def find_nearby_phc(
+def find_nearby_phc(
     latitude: float,
     longitude: float,
     radius_km: int = 10,
@@ -60,7 +60,7 @@ async def find_nearby_phc(
     try:
         radius_meters = radius_km * 1000
 
-        async for attempt in AsyncRetrying(
+        for attempt in Retrying(
             reraise=True,
             stop=stop_after_attempt(3),
             wait=wait_exponential(multiplier=0.5, min=1, max=5),
@@ -72,8 +72,8 @@ async def find_nearby_phc(
             ),
         ):
             with attempt:
-                async with httpx.AsyncClient(timeout=10.0) as client:
-                    response = await client.get(
+                with httpx.Client(timeout=10.0) as client:
+                    response = client.get(
                         PLACES_NEARBY_URL,
                         params={
                             "location": f"{latitude},{longitude}",
