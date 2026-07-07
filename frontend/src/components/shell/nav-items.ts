@@ -9,6 +9,7 @@ import {
   Map,
   Building2,
   LineChart,
+  HeartPulse,
 } from "lucide-react";
 
 export const navItems = [
@@ -22,6 +23,7 @@ export const navItems = [
   { href: "/map", label: "District Map", icon: Map, group: "District" },
   { href: "/facilities", label: "Facilities", icon: Building2, group: "District" },
   { href: "/analytics", label: "Analytics", icon: LineChart, group: "District" },
+  { href: "/citizen", label: "Citizen Services", icon: HeartPulse, group: "Public" },
 ] as const;
 
 export type NavItem = (typeof navItems)[number];

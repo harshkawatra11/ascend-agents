@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navItems } from "./nav-items";
 
-const groups = ["Command", "Operations", "District"] as const;
+const groups = ["Command", "Operations", "District", "Public"] as const;
 
 export function Sidebar() {
   const pathname = usePathname();
