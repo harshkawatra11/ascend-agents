@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-2.5-flash"
-
+    google_maps_api_key: str | None = None
     use_vertex_ai: bool = False
     use_secret_manager: bool = False
     google_cloud_project: str | None = None
