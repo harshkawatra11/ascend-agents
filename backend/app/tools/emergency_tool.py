@@ -147,7 +147,7 @@ KEYWORD_MAP = {
 }
 
 
-async def get_emergency_guidance(condition: str) -> dict:
+def get_emergency_guidance(condition: str) -> dict:
     """
     Provide first-aid guidance and emergency referral information.
 
