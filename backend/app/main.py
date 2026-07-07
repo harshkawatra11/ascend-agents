@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import logging
 
-from app.api.v1 import chat, health, routes
+from app.api.v1 import chat, health, routes, public_chat
 from app.core.config import get_settings
 from app.core.exceptions import SwasthyaGridError, FacilityNotFoundError
 from app.core.logging import setup_logging
@@ -53,6 +53,7 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(routes.router)
     app.include_router(chat.router)
+    app.include_router(public_chat.router)
 
     return app
 
