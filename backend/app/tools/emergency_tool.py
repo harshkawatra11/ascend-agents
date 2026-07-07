@@ -10,9 +10,9 @@ Always direct users to call 108 (National Emergency) for life-threatening situat
 
 from __future__ import annotations
 
-from app.core.logging import get_logger
+import logging
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 # Emergency conditions and their guidance
 EMERGENCY_GUIDANCE_DB: dict[str, dict] = {
@@ -168,7 +168,7 @@ def get_emergency_guidance(condition: str) -> dict:
 
     if matched_key and matched_key in EMERGENCY_GUIDANCE_DB:
         guidance = EMERGENCY_GUIDANCE_DB[matched_key]
-        logger.info("Emergency guidance provided", condition=condition, matched=matched_key)
+        logger.info(f"Emergency guidance provided: condition='{condition}' matched='{matched_key}'")
         return {
             "condition": guidance["condition"],
             "severity": guidance["severity"],
@@ -183,7 +183,7 @@ def get_emergency_guidance(condition: str) -> dict:
         }
 
     # Generic emergency response
-    logger.info("Generic emergency guidance provided", condition=condition)
+    logger.info(f"Generic emergency guidance provided: condition='{condition}'")
     return {
         "condition": f"Medical Emergency: {condition}",
         "severity": "UNKNOWN",

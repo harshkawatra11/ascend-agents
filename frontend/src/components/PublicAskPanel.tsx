@@ -41,7 +41,7 @@ export function PublicAskPanel() {
   return (
     <div className="w-full flex flex-col h-[500px]">
       <div className="p-6 border-b border-hairline bg-paper flex items-center gap-3">
-        <HeartPulse className="text-clay" size={20} />
+        <HeartPulse className="text-accent-clay" size={20} />
         <h2 className="font-serif-display text-xl text-ink">Ask SwasthyaGrid</h2>
       </div>
       

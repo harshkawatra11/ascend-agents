@@ -7,7 +7,7 @@ export default function CitizenServicesPage() {
       {/* Header */}
       <div className="px-8 py-6 border-b border-hairline bg-paper-dim">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-clay/10 text-clay rounded-full">
+          <div className="p-2 bg-accent-clay/10 text-accent-clay rounded-full">
             <HeartPulse size={24} />
           </div>
           <div>

@@ -9,14 +9,14 @@ from __future__ import annotations
 
 import math
 
+import logging
 import httpx
 from tenacity import Retrying, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from app.core.config import get_settings
 from app.core.exceptions import MapsAPIException
-from app.core.logging import get_logger
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 # Google Places API endpoint
 PLACES_NEARBY_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
@@ -66,9 +66,7 @@ def find_nearby_phc(
             wait=wait_exponential(multiplier=0.5, min=1, max=5),
             retry=retry_if_exception_type(httpx.HTTPError),
             before_sleep=lambda retry_state: logger.warning(
-                "Maps API HTTP request failed. Retrying...",
-                attempt=retry_state.attempt_number,
-                exception=str(retry_state.outcome.exception()),
+                f"Maps API HTTP request failed. Retrying... attempt={retry_state.attempt_number}"
             ),
         ):
             with attempt:
@@ -124,11 +122,7 @@ def find_nearby_phc(
             summary += f" Nearest: {nearest['name']} ({nearest['distance_km']}km away)."
 
         logger.info(
-            "Nearby PHC search",
-            latitude=latitude,
-            longitude=longitude,
-            radius_km=radius_km,
-            results=len(places),
+            f"Nearby PHC search lat={latitude} lon={longitude} radius_km={radius_km} results={len(places)}"
         )
 
         return {
@@ -138,10 +132,10 @@ def find_nearby_phc(
         }
 
     except httpx.HTTPError as e:
-        logger.error("Maps API HTTP error", error=str(e))
+        logger.error(f"Maps API HTTP error: {e}")
         raise MapsAPIException(str(e)) from e
     except Exception as e:
-        logger.error("Nearby PHC search failed", error=str(e))
+        logger.error(f"Nearby PHC search failed: {e}")
         return {
             "places": [],
             "summary": f"Error finding nearby PHCs: {e}",
