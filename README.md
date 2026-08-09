@@ -2,435 +2,260 @@
 
 <br/>
 
-# SwasthyaGrid AI
+# SwasthyaGrid
 
-### *An Intelligent District Health Operations Center & Citizen Portal*
+### An Agentic District Healthcare Ops Center
 
-**Predictive · Prescriptive · Explainable · Human-Governed · Citizen-Centric**
+**Monitor · Reason · Act · Human Approval**
 
-Built for **GDG BuildWithAI 2025** · India's District Health Crisis, Solved.
-
-<br/>
-
-[![Live App](https://img.shields.io/badge/Live_App-swasthyagrid.vercel.app-3f6b4a?style=for-the-badge&logo=vercel&logoColor=white)](https://swasthyagrid.vercel.app)
-[![Cloud Run](https://img.shields.io/badge/Backend-Cloud_Run_asia--south1-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](https://swasthyagrid-api-616415200021.asia-south1.run.app/docs)
-[![Gemini](https://img.shields.io/badge/Gemini_2.5_Flash-AI_Engine-b5502e?style=for-the-badge&logo=google&logoColor=white)](#-ai-engine--gemini-25-flash)
+Built for **Ascendant Agents** (DCODE) — Track 07, Open Innovation
 
 <br/>
 
-[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Google Maps](https://img.shields.io/badge/Google_Maps_API-4285F4?style=for-the-badge&logo=googlemaps&logoColor=white)](#-powered-by-google-technologies)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2.10-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.12-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Gemini](https://img.shields.io/badge/Gemini-Tool_Calling-b5502e?style=for-the-badge&logo=google&logoColor=white)](#the-explanation-layer)
+[![Firestore](https://img.shields.io/badge/Firestore-with_JSON_fallback-FFA000?style=for-the-badge&logo=firebase&logoColor=white)](#data)
 
 <br/>
 
-[Overview](#-overview) · [Live Demo](#-live-deployment) · [Architecture](#-architecture) · [AI Engine](#-ai-engine--gemini-25-flash) · [Quickstart](#-running-locally) · [Deploy](#-deployment)
+[The idea](#the-idea) · [Architecture](#architecture) · [The moneyshot](#the-moneyshot-a-worked-example) · [Quickstart](#quickstart) · [What's real vs. roadmap](#whats-real-vs-roadmap) · [Demo](#demo)
 
 </div>
 
 ---
 
-## 🌐 Live Deployment
+## The idea
 
-> **This is not a mockup.** SwasthyaGrid AI is a fully functional, production-ready prototype deployed end-to-end on Google Cloud — including the facility data portal that feeds it.
+> *"The district was rarely short on medicine. It was short on visibility."*
 
-| Component | Technology | Status |
-| :--- | :--- | :--- |
-| **Frontend** | Next.js 15 on **Vercel** | 🟢 [swasthyagrid.vercel.app](https://swasthyagrid.vercel.app) |
-| **Backend API** | FastAPI on **Google Cloud Run** (asia-south1) | 🟢 [API Docs](https://swasthyagrid-api-616415200021.asia-south1.run.app/docs) |
-| **Data source** | **[SwasthyaGrid Intake](https://swasthyagrid-crm.vercel.app)** — facility CRM ([repo](https://github.com/harshkawatra11/SwasthyaGrid-CRM)) | 🟢 Role-based login, writes to shared **Firestore** |
-| **AI Intelligence** | **Gemini 2.5 Flash** (function calling) | 🟢 Live via `google-genai` SDK |
-| **Secrets** | **Google Secret Manager** | 🟢 Zero hardcoded secrets |
-| **Maps** | **Google Maps Places API** | 🟢 Nearest PHC routing |
+District health systems in India run on phone calls, WhatsApp groups, and paper registers. A
+shortage that was predictable three days earlier gets discovered the day it becomes a crisis.
+SwasthyaGrid is a coordination layer for a district's PHCs and CHCs: it watches every facility,
+searches for the best correction when something goes wrong, and proposes it — quantified,
+scored, and explained.
 
-### Where does the data come from?
-
-Every PHC/CHC gets a login to **[SwasthyaGrid Intake](https://swasthyagrid-crm.vercel.app)** — a companion app, its own repo, its own Vercel deployment — where staff report medicine stock, bed occupancy, doctor attendance, and patient footfall each morning. Those writes land in a shared **Firestore** database (`swasthyagrid-ai-54886`). This backend's `DistrictRepository` reads that same Firestore on a short TTL (≤20s), so a facility's edit propagates into the forecast engine, the recommendation engine, and the district map here — live, with no redeploy. If Firestore is ever unreachable, the backend falls back to its bundled seed JSON so the console never breaks.
-
----
-
-## 📖 Overview
-
-Primary Health Centres (PHCs) across India operate in isolation — medicine stock-outs, unmanaged footfall, and bed shortages are tracked manually on paper. By the time a District Medical Officer hears about a crisis, **it has already happened.**
-
-**SwasthyaGrid AI** solves this from two angles:
-
-| Layer | Who it Serves | What it Does |
-|:---|:---|:---|
-| 🏛️ **Admin Dashboard** | District Officers | Predictive forecasting, prescriptive resource routing, human-governed AI recommendations |
-| 🏥 **Citizen Portal** | Patients & Citizens | Real-time emergency guidance (108), GPS-based nearest PHC finder |
-
-> *"Think of SwasthyaGrid as Google Maps for district healthcare — routing medicines, doctors, beds, and citizens before a crisis occurs."*
-
----
-
-## 🏗️ Architecture
-
-### System Diagram
+**The thesis this whole system is built around: the agent that refuses to act alone is the
+better agent for public health.** Every action SwasthyaGrid's agents produce is a *proposal*.
+Nothing executes without a human administrator's explicit approval. That is not a missing
+feature — it's the product.
 
 ```
-                    ┌─────────────────────────────────┐
-                    │       District Officer           │
-                    │    (Browser / Mobile Web)        │
-                    └──────────────┬──────────────────┘
-                                   │ HTTPS
-                    ┌──────────────▼──────────────────┐
-                    │    Next.js 15  (Vercel Edge)     │
-                    │  /overview  /recommendations      │
-                    │  /citizen   /api/public-ask       │
-                    └──────────────┬──────────────────┘
-                                   │ REST (JSON)
-                    ┌──────────────▼──────────────────┐
-                    │   FastAPI  (Google Cloud Run)    │
-                    │         asia-south1              │
-                    └───┬──────────┬────────┬─────────┘
-                        │          │        │
-            ┌───────────▼──┐  ┌────▼────┐  ┌▼──────────────────┐
-            │ Forecast      │  │ Recom-  │  │  AI Agents         │
-            │ Engine        │  │ mendati │  │  HealthAgent       │
-            │ (Deterministic│  │ on      │  │  PublicAgent       │
-            │  Haversine)   │  │ Engine  │  │  (Gemini 2.5 Flash)│
-            └───────────────┘  └─────────┘  └──────┬────────────┘
-                                                    │
-                         ┌──────────────────────────┤
-                         │                          │
-                ┌────────▼───────┐     ┌────────────▼──────┐
-                │ Google Secret  │     │  Google Maps       │
-                │ Manager        │     │  Places API        │
-                │ (API Keys)     │     │  (Nearest PHC)     │
-                └────────────────┘     └───────────────────┘
-```
-
-### AI Agent Architecture (Gemini Function Calling)
-
-```
-User / District Officer
-        │
-        ▼
-  HealthAgent / PublicAgent
-        │
-        ├──── Gemini 2.5 Flash ◄──── System Prompt (healthcare rules)
-        │            │
-        │      Tool Call Request?
-        │            │
-        │     ┌──────▼─────────────────────────────────┐
-        │     │           Tool Registry                 │
-        │     │  get_district_overview()                │
-        │     │  get_facility_detail(facility_id)       │
-        │     │  get_medicine_stock()                   │
-        │     │  get_footfall_forecast()                │
-        │     │  get_recommendations()                  │
-        │     │  get_emergency_guidance(condition) ←─── Citizen
-        │     │  find_nearby_phc(lat, lon)    ←──────── Citizen
-        │     └──────┬──────────────────────────────────┘
-        │            │
-        │     Tool Result → Feed back to Gemini
-        │            │
-        └──────► Final Response (structured JSON)
-```
-
-### Agentic Chat Flow
-
-```
-Client         Next.js          FastAPI          HealthAgent        Gemini
-  │               │                 │                 │                │
-  │──POST /ask──► │                 │                 │                │
-  │               │──POST /api/v1/ask──►              │                │
-  │               │                 │────agent.ask()─►│                │
-  │               │                 │                 │──generate────► │
-  │               │                 │                 │◄─tool_call──── │
-  │               │                 │                 │──execute tool  │
-  │               │                 │                 │──feed result──►│
-  │               │                 │                 │◄──response──── │
-  │               │◄──{answer,conf}─│                 │                │
-  │◄──JSON────────│                 │                 │                │
+                 SWASTHYAGRID
+             AI HEALTHCARE AGENT
+                       │
+        ┌──────────────┼──────────────┐
+        ↓              ↓              ↓
+    MONITOR          REASON          ACT
+        │              │              │
+   Facilities      Risk engine     Recommendations
+   Medicines       Forecasts       Transfers
+   Beds            Causes          Redirects
+   Doctors         Constraints     Escalations
+   Diagnostics
+        │              │              │
+        └──────────────┼──────────────┘
+                       ↓
+                HUMAN APPROVAL
+                       ↓
+                    ACTION
 ```
 
 ---
 
-## 📁 Project Structure
+## Architecture
+
+Three apps, one district:
 
 ```
-ai-healthcare-platform/
-├── backend/                          # FastAPI Python backend
-│   ├── app/
-│   │   ├── main.py                   # FastAPI app factory + CORS + error handlers
-│   │   ├── api/
-│   │   │   ├── deps.py               # Dependency injection (HealthAgent, PublicAgent)
-│   │   │   └── v1/
-│   │   │       ├── health.py         # GET /health, /ready
-│   │   │       ├── chat.py           # POST /api/v1/ask (admin AI)
-│   │   │       ├── public_chat.py    # POST /api/v1/public-chat (citizen AI)
-│   │   │       └── routes.py         # District data REST endpoints
-│   │   ├── agents/
-│   │   │   ├── health_agent.py       # Admin AI (district tools only)
-│   │   │   └── public_agent.py       # Citizen AI (emergency + maps only)
-│   │   ├── core/
-│   │   │   ├── config.py             # Pydantic Settings (env vars)
-│   │   │   ├── logging.py            # Logging configuration
-│   │   │   └── exceptions.py         # Domain exception hierarchy
-│   │   ├── tools/
-│   │   │   ├── district_tools.py     # Admin: forecast, recommendations, facilities
-│   │   │   ├── emergency_tool.py     # Citizen: first-aid guidance, 108 routing
-│   │   │   └── maps_tool.py          # Citizen: Google Maps nearest PHC finder
-│   │   ├── services/                 # Business logic layer
-│   │   ├── repositories/             # Data access layer
-│   │   ├── schemas/                  # Pydantic DTOs (AskRequest, AskResponse)
-│   │   └── prompts/
-│   │       └── system_prompt.py      # Gemini system prompt
-│   ├── data/
-│   │   └── seed_district.json        # District seed data (50 PHCs)
-│   ├── Dockerfile                    # Multi-stage, non-root production image
-│   └── requirements.txt
-│
-├── frontend/                         # Next.js 15 frontend
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── (dashboard)/
-│   │   │   │   ├── overview/         # Command center KPIs
-│   │   │   │   ├── recommendations/  # AI recommendations + approve/reject
-│   │   │   │   ├── inventory/        # Medicine stock forecasting
-│   │   │   │   ├── beds/             # Bed availability
-│   │   │   │   ├── doctors/          # Doctor availability
-│   │   │   │   ├── footfall/         # Patient demand forecasting
-│   │   │   │   ├── map/              # District spatial map
-│   │   │   │   ├── facilities/       # All PHCs table
-│   │   │   │   ├── analytics/        # Causal analytics
-│   │   │   │   ├── diagnostics/      # Equipment availability
-│   │   │   │   └── citizen/          # Citizen portal (emergency + maps)
-│   │   │   ├── api/
-│   │   │   │   ├── ask/route.ts      # Proxy → backend /api/v1/ask
-│   │   │   │   └── public-ask/route.ts # Proxy → backend /api/v1/public-chat
-│   │   │   └── globals.css           # Design tokens (parchment palette)
-│   │   ├── components/
-│   │   │   ├── shell/                # Sidebar, Topbar, layout shell
-│   │   │   ├── AskPanel.tsx          # Admin AI chat (floating button)
-│   │   │   ├── PublicAskPanel.tsx    # Citizen AI chat (embedded)
-│   │   │   └── ...                   # Domain components
-│   │   └── data/
-│   │       └── district.ts           # Type-safe district data
-│   └── package.json
-│
-├── docs/                             # Engineering documentation
-│   ├── 00-vision.md
-│   ├── 01-architecture.md
-│   ├── 03-api-contract.md
-│   ├── 05-ai-engine.md
-│   └── 09-gcp-deployment.md
-└── pitch-deck.html                   # Self-contained HTML pitch deck
+frontend/            Next.js 16 — the 12-screen district command console
+backend/              FastAPI — forecasting, recommendation engine, Gemini agents
+ai-healthcare-crm/    Next.js 16 — facility-side daily data intake portal
+```
+
+```mermaid
+flowchart LR
+    subgraph Facilities
+        CRM[SwasthyaGrid Intake CRM]
+    end
+    subgraph Data
+        FS[(Firestore)]
+        SEED[(seed_district.json)]
+    end
+    subgraph Backend[FastAPI]
+        MON[Monitor\nforecast_service.py]
+        REA[Reason\nrecommendation_service.py]
+        ACT[Act\n4 typed proposals]
+        LOG[(approval_log)]
+    end
+    subgraph AI[Gemini — explanation only]
+        HA[HealthAgent]
+        PA[PublicAgent]
+    end
+    UI[Next.js Command Console]
+    ADMIN((District Administrator))
+
+    CRM -->|writes| FS
+    FS -->|20s refresh, or fallback| MON
+    SEED -.fallback.-> MON
+    MON --> REA --> ACT
+    ACT -->|pending recommendation| UI
+    UI -->|approve / modify / reject| ADMIN
+    ADMIN -->|resolve| REA
+    REA -->|audit entry| LOG
+    UI <-.explains via tools, never invents a number.-> HA
+    UI -.citizen chat.-> PA
+```
+
+### Three agents, mapped to real code — not a diagram for its own sake
+
+| Agent | Owns | Real implementation |
+|---|---|---|
+| **Monitor** | Facilities, medicines, beds, doctors, diagnostics | `forecast_service.py` — `days_remaining = units_remaining / avg_daily_consumption`, tiered `<3d high / <6d medium / else low`, cascading facility risk |
+| **Reason** | Risk engine, forecasts, causes, constraints | `recommendation_service.py` — scans every other facility for surplus, ranks by `(distance_km, surplus)`, scores a confidence formula (below) |
+| **Act** | Recommendations, transfers, redirects, escalations | 4 typed proposals: `stock_transfer`, `staff_transfer`, `bed_redirect`, `diagnostic_redirect`. *"The engine only ever proposes."* — module docstring |
+| **Human Approval → Action** | The gate | `RecommendationService.resolve()` is the **only** function that can move a recommendation out of `pending`. Every resolution is written to an audit trail. |
+
+The confidence formula, verbatim from the code — distance and safety margin actively *penalise*
+a risky transfer, so the score can't be gamed by picking any facility with surplus:
+
+```python
+factor_score        = min(len(factors) * 10, 30)
+logistics_score      = max(0, 20 − distance_km)
+safety_margin_score  = 10 if (surplus − quantity) > 0 else 5
+confidence = min(round(forecast_confidence * 0.4 + factor_score + logistics_score + safety_margin_score), 99)
 ```
 
 ---
 
-## ⚡ Powered by Google Technologies
+## The moneyshot — a worked example
 
-### 🧠 Gemini 2.5 Flash — Dual-Agent Architecture
-
-SwasthyaGrid runs **two isolated Gemini agents**:
-
-| Agent | Audience | Tools Available |
-|:---|:---|:---|
-| `HealthAgent` | District Officers | `get_district_overview`, `get_facility_detail`, `get_medicine_stock`, `get_footfall_forecast`, `get_recommendations`, `get_causal_chain`, `get_performance_scores` |
-| `PublicAgent` | Citizens / Patients | `get_emergency_guidance` (first-aid + 108), `find_nearby_phc` (Maps API) |
-
-Security isolation is enforced by design — citizens cannot access operational district data.
-
-### ☁️ Google Cloud Run (Serverless Backend)
-
-FastAPI backend deployed on **Cloud Run (asia-south1)** with:
-- Zero-downtime deployments via Cloud Build
-- Automatic HTTPS and load balancing
-- Pay-per-request scaling to zero
-
-### 🔐 Google Secret Manager
-
-Zero hardcoded secrets. The `GEMINI_API_KEY` is injected at runtime from Secret Manager into the Cloud Run container.
-
-### 🗺️ Google Maps Places API
-
-The Citizen Portal calls the **Places Nearby API** to locate the nearest functional PHC/hospital based on the user's GPS coordinates, with haversine fallback sorting.
-
-### 🚀 Phase 3: Vertex AI Scale Path
-
-The architecture is designed to scale into **Vertex AI** for XGBoost/LightGBM forecasting models, **BigQuery** for historical trend analysis, and **Pub/Sub** for real-time event streaming.
-
----
-
-## 🛡️ Core Principle: AI Proposes, Humans Decide
-
-In public healthcare, autonomous AI is a liability. The `HealthAgent` acts strictly as an **Agentic Decision Support System**.
+**PHC Phagi is down to 4 units of Anti-Snake Venom, consuming 2/day.**
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  🚨 STOCK TRANSFER RECOMMENDATION · PHC Sector-12 → Rural-14 │
-│                                                              │
-│  💊 Paracetamol · Transfer 250 strips             96% ●●●●  │
-│                                                   CONFIDENCE │
-│                                                              │
-│  REASONING:                                                  │
-│  — Projected stock depletion at Rural-14 in 3.4 days        │
-│  — Impending rain forecast increasing fever cases            │
-│  — PHC Sector-12 holds a surplus 650 strips (6 km away)     │
-│                                                              │
-│       [ ✅ Approve ]    [ ✏️ Modify ]    [ ❌ Reject ]        │
-└──────────────────────────────────────────────────────────────┘
+4 units ÷ 2/day = 2.0 days remaining → HIGH RISK
+
+Search: which other facility stocks ASV?
+  → CHC North: 80 units, 3/day → 26.7 days of cover, 48 km away
+  → surplus above its own 5-day safety stock = 80 − 15 = 65 units
+
+Recommend:
+  deficit to 5-day safety stock at PHC Phagi = (2 × 5) − 4 = 6 units
+  quantity = min(6, 65) = 6 units
+
+Score:
+  factor_score (10) + logistics_score (0, 48km fully discounts it) + safety_margin (10)
+  + forecast_confidence 80 × 0.4
+  = confidence 52 — PENDING ADMINISTRATOR APPROVAL
 ```
 
----
-
-## 🏥 Dashboard Capabilities
-
-| Module | Description |
-|:---|:---|
-| 📍 **District Map** | Live spatial view of all PHCs colored by risk level (🟢🟡🟠🔴) |
-| 📊 **Overview Console** | Command-center KPIs, pending alerts, AI timeline |
-| 📦 **Inventory** | Medicine stock forecasting with depletion curves |
-| 🛏️ **Beds** | Real-time occupancy by ward type across all facilities |
-| 👨‍⚕️ **Doctors** | Staff attendance risk and availability tracking |
-| 🔬 **Diagnostics** | Lab equipment availability across the district |
-| 📈 **Analytics** | Causal chain analysis explaining demand spikes |
-| 🧠 **Recommendations** | AI-generated ranked resource-redistribution actions |
-| 🏥 **Citizen Portal** | Emergency first-aid guidance + nearest PHC routing |
+This is the **only** stock-transfer recommendation the engine's real seed data actually
+generates today — every other multi-facility medicine has no facility below the high-risk
+threshold, so this isn't cherry-picked. The moderate confidence is the point: the score
+visibly discounts a real 48 km supply line instead of rewarding any transfer that "solves" the
+shortage on paper. That's what an explainable, non-overconfident recommendation looks like.
 
 ---
 
-## 🖥️ Running Locally
+## The explanation layer
 
-### Prerequisites
-- Python 3.12+ and Node.js 18+
-- A Gemini API key from [Google AI Studio](https://aistudio.google.com)
-- (Optional) A Google Maps API key for live PHC routing
+Two Gemini agents sit above the deterministic engine — **explanation only, never prediction**:
 
-### 1. Backend
+- **`HealthAgent`** — 7 tools bound to Gemini (`get_district_overview`, `get_medicine_stock`,
+  `get_recommendations`, `get_causal_chain`, …), `MAX_TOOL_ITERATIONS = 5`, returns
+  `{answer, tool_calls[], confidence}`. The system prompt states the contract directly:
+
+  > *"You are read-only: you explain data and reasoning, you never claim to have executed a
+  > transfer, approval, or any other action. Recommendations always require a human
+  > administrator's approval."*
+
+- **`PublicAgent`** — citizen-facing, a disjoint toolset (`get_emergency_guidance`,
+  `find_nearby_phc`) so operational authority and public guidance never cross-contaminate.
+
+The `/agents` console in the frontend renders the live `tool_calls[]` trace — "Monitor called
+`get_medicine_stock` → Reason called `get_recommendations`" — so an administrator can see what
+the agent actually looked at before it spoke.
+
+---
+
+## Quickstart
+
+Every screen in the frontend renders from local mock data with **zero backend, zero Firestore,
+zero API keys** — `safeFetch()` has a 3-second timeout that falls back to
+`frontend/src/data/district.ts`. Start there.
 
 ```bash
-cd backend
-python -m venv .venv
-
-# Windows
-.\.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
-
-pip install -r requirements.txt
-
-# Create .env file
-echo 'GEMINI_API_KEY="your-gemini-key"' > .env
-echo 'GOOGLE_MAPS_API_KEY="your-maps-key"' >> .env   # optional
-
-uvicorn app.main:app --reload --port 8080
-```
-
-API docs at → **[http://localhost:8080/docs](http://localhost:8080/docs)**
-
-### 2. Frontend
-
-```bash
+# Frontend — the 12-screen command console
 cd frontend
 npm install
+npm run dev            # http://localhost:3000
 
-# Create .env.local
-echo 'GEMINI_API_KEY="your-gemini-key"' > .env.local
+# Backend — forecasting, recommendation engine, Gemini agents
+cd backend
+python -m venv .venv && .venv\Scripts\activate     # or source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8080           # docs at http://localhost:8080/docs
 
+# CRM — facility data intake (requires real Firebase credentials, see below)
+cd ai-healthcare-crm
+npm install
 npm run dev
 ```
 
-Open → **[http://localhost:3000](http://localhost:3000)**
+### Environment variables
 
-> The dashboard runs on mock data out of the box. The **Ask SwasthyaGrid** panel and **Citizen Portal** activate automatically with your Gemini API key.
+| File | Variable | Required for |
+|---|---|---|
+| `frontend/.env.local` | `NEXT_PUBLIC_API_BASE` | Pointing the console at the FastAPI backend (defaults to `localhost:8080`) |
+| `frontend/.env.local` | `GEMINI_API_KEY` | The `/api/ask` route's direct-Gemini fallback (only used if the backend is unreachable) |
+| `backend/.env` | `GEMINI_API_KEY` | `HealthAgent` / `PublicAgent` tool-calling |
+| `backend/.env` | `GEMINI_MODEL` | Model override (defaults to `gemini-3.5-flash-lite`) |
+| `backend/.env` | `GOOGLE_MAPS_API_KEY` | Real nearest-PHC lookups (falls back to labelled `[DEMO DATA]` without it) |
+| `backend/.env` | `GOOGLE_CLOUD_PROJECT`, `USE_SECRET_MANAGER` | Firestore + Secret Manager in production |
+| `ai-healthcare-crm/.env.local` | `FIREBASE_SERVICE_ACCOUNT` | Base64 service-account JSON — the CRM hard-fails without it |
+| `ai-healthcare-crm/.env.local` | `SESSION_SECRET` | 64-hex JWT signing secret |
 
----
-
-## 🌩️ Deployment
-
-### Backend → Google Cloud Run
-
-```bash
-# Authenticate
-gcloud auth login
-gcloud config set project YOUR_PROJECT_ID
-
-# Build & push image
-gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/swasthyagrid-api:latest ./backend
-
-# Deploy to Cloud Run
-gcloud run deploy swasthyagrid-api \
-  --image gcr.io/YOUR_PROJECT_ID/swasthyagrid-api:latest \
-  --platform managed \
-  --region asia-south1 \
-  --allow-unauthenticated \
-  --set-env-vars="ENVIRONMENT=production,GOOGLE_CLOUD_PROJECT=YOUR_PROJECT_ID" \
-  --set-secrets="GEMINI_API_KEY=gemini-api-key:latest"
-```
-
-### Frontend → Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
-# Set GEMINI_API_KEY and NEXT_PUBLIC_API_URL in Vercel dashboard
-```
-
-### Environment Variables
-
-| Variable | Where | Description |
-|:---|:---|:---|
-| `GEMINI_API_KEY` | Backend `.env` / Secret Manager | Gemini 2.5 Flash API key |
-| `GOOGLE_MAPS_API_KEY` | Backend `.env` / Cloud Run | Maps Places API for PHC routing |
-| `GEMINI_API_KEY` | Frontend `.env.local` | For the Ask panel (Next.js route handler) |
-| `NEXT_PUBLIC_API_URL` | Frontend `.env.local` / Vercel | Backend base URL (e.g. Cloud Run URL) |
+None of these are required to run the frontend and see the full agent loop end to end.
 
 ---
 
-## 🤖 AI Engineering Patterns
+## What's real vs. roadmap
 
-| Pattern | Implementation |
-|:---|:---|
-| **Dual-Agent Isolation** | `HealthAgent` (admin) and `PublicAgent` (citizen) are completely separate with different tool sets |
-| **Tool Calling** | Gemini function declarations with automatic dispatch loop |
-| **Agentic Loop** | Max 5 iterations with graceful fallback to static message |
-| **System Prompt** | Carefully crafted healthcare-safety rules per agent |
-| **Emergency Detection** | Keyword matching → proactive 108 guidance |
-| **Graceful Fallback** | Mock responses when API key unavailable |
-| **Security by Design** | Citizens cannot access operational district data |
+Honesty over hype — this is exactly what's built today, and exactly what isn't.
+
+**Built:**
+- Deterministic Monitor → Reason → Act pipeline, verified against live seed data (see the
+  worked example above — those numbers came from the running engine, not a slide)
+- Hard-coded human approval gate — `resolve()` is the only state-transition path in the codebase
+- Persisted approval audit trail (Firestore, with an in-memory fallback)
+- Two Gemini tool-calling agents with a disjoint admin/citizen toolset
+- Graceful degradation to zero-backend mock data on every screen
+- A CRM app for real facility-side data intake
+
+**Roadmap, not built:**
+- A scheduler for autonomous Monitor runs — today it's pull-on-read with a 20-second TTL, not
+  a background job
+- No SSE/websocket — the agent console polls, it doesn't stream
+- No government data integration yet (HMIS/IDSP/ABDM) — seed data models one illustrative
+  district (Jaipur Rural, Rajasthan; 8 facilities)
+- No ML forecasting — the service interface (`{value, confidence, factors[]}`) is designed so
+  a trained model can slot in later without changing callers
+
+Full research and argument behind the deck: [`research-dossier.md`](./research-dossier.md).
 
 ---
 
-## 📚 Engineering Documentation
+## Demo
 
-Every architectural decision was documented before a single line of code was written:
-
-- [`00-vision.md`](docs/00-vision.md) — Product philosophy & human-in-the-loop design
-- [`01-architecture.md`](docs/01-architecture.md) — System architecture & GCP integration
-- [`03-api-contract.md`](docs/03-api-contract.md) — REST API documentation
-- [`05-ai-engine.md`](docs/05-ai-engine.md) — How Gemini is used safely in healthcare
-- [`09-gcp-deployment.md`](docs/09-gcp-deployment.md) — Cloud Run deployment & Vertex AI scale path
-
----
-
-## 🚀 Roadmap
-
-- [x] Facility data portal with role-based login — **[SwasthyaGrid Intake](https://github.com/harshkawatra11/SwasthyaGrid-CRM)**, writing to a shared Firestore
-- [ ] Migrate CRM to Firebase Authentication + client-scoped security rules (currently server-only JWT sessions, since Identity Platform wasn't enabled)
-- [ ] Vertex AI for XGBoost stock-out forecasting
-- [ ] BigQuery for historical district analytics
-- [ ] WhatsApp bot for rural citizens (no smartphone required)
-- [ ] Pub/Sub for real-time cross-district event streaming
-- [ ] NLP support for Hindi, Tamil, Kannada
-- [ ] FHIR-compliant API endpoints
-- [ ] Telemedicine video call integration
+- **Video:** _add the 3–4 minute demo video link here_
+- **Deck:** _add the Figma Slides link here_
+- **Repo:** you're looking at it
 
 ---
 
 <div align="center">
 
-*SwasthyaGrid AI — Because a district health system should know about a stock-out three days before it happens, not three days after.*
-
-**[swasthyagrid.vercel.app](https://swasthyagrid.vercel.app) · Built for GDG BuildWithAI 2025**
+Built by Harsh Kawatra, Anuj Gambhir, Gursimran Kaur, Dayita Arora
 
 </div>
