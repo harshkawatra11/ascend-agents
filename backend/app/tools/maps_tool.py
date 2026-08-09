@@ -7,9 +7,9 @@ based on user GPS coordinates.
 
 from __future__ import annotations
 
+import logging
 import math
 
-import logging
 import httpx
 from tenacity import Retrying, retry_if_exception_type, stop_after_attempt, wait_exponential
 
@@ -122,7 +122,8 @@ def find_nearby_phc(
             summary += f" Nearest: {nearest['name']} ({nearest['distance_km']}km away)."
 
         logger.info(
-            f"Nearby PHC search lat={latitude} lon={longitude} radius_km={radius_km} results={len(places)}"
+            f"Nearby PHC search lat={latitude} lon={longitude} "
+            f"radius_km={radius_km} results={len(places)}"
         )
 
         return {

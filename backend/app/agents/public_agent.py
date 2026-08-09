@@ -49,8 +49,9 @@ class PublicAgent:
             # Adjust system instruction for citizens
             citizen_instruction = (
                 SYSTEM_PROMPT + "\n\nYou are talking to a citizen or patient. "
-                "Provide direct, helpful, and compassionate answers. If they ask about emergencies, "
-                "always direct them to 108. If they ask about nearby hospitals, use your tools to find one."
+                "Provide direct, helpful, and compassionate answers. If they ask "
+                "about emergencies, always direct them to 108. If they ask about "
+                "nearby hospitals, use your tools to find one."
             )
 
             chat = self._client.chats.create(

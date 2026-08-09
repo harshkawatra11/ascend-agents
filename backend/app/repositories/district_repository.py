@@ -111,7 +111,8 @@ class DistrictRepository:
         if fresh is None:
             return
 
-        new_hash = hashlib.sha256(json.dumps(fresh, sort_keys=True, default=str).encode()).hexdigest()
+        serialized = json.dumps(fresh, sort_keys=True, default=str).encode()
+        new_hash = hashlib.sha256(serialized).hexdigest()
         old_hash = getattr(self, "_data_hash", None)
         if new_hash != old_hash:
             self._data = fresh

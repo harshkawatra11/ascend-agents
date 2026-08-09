@@ -13,8 +13,8 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Install dependencies
@@ -22,7 +22,7 @@ jobs:
       - name: Lint (Ruff)
         run: ruff check app
       - name: Test (Pytest)
-        run: pytest --cov=app || true
+        run: pytest --cov=app
 
   frontend-ci:
     runs-on: ubuntu-latest
@@ -30,8 +30,8 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: "npm"
@@ -40,14 +40,14 @@ jobs:
       - run: npm run build
 
   # Deploy is manual-gated: requires GCP_PROJECT_ID and GCP_SA_KEY secrets to be
-  # configured, which only happens once a GCP project is explicitly provisioned
-  # (see docs/09-gcp-deployment.md). Left commented out until then.
+  # configured. The live deployment is currently driven from the CLI instead
+  # (Cloud Run for the backend, Vercel for the frontend) — see the README.
   # deploy:
   #   needs: [backend-ci, frontend-ci]
   #   if: github.ref == 'refs/heads/main'
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v5
   #     - uses: google-github-actions/auth@v2
   #       with:
   #         credentials_json: ${{ secrets.GCP_SA_KEY }}

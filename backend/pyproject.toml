@@ -24,5 +24,15 @@ dev = [
 [tool.ruff]
 line-length = 100
 
+[tool.ruff.lint]
+# Pin the rule set explicitly. Relying on Ruff's defaults means a new Ruff
+# release can fail CI on code that never changed, which is what happened when
+# CI resolved a newer Ruff than the pinned local one.
+select = ["E", "F", "W", "I", "B", "UP"]
+# B008 forbids function calls in argument defaults, but `Depends(...)` in a
+# signature default is FastAPI's documented dependency-injection syntax and
+# cannot be written any other way.
+ignore = ["B008"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

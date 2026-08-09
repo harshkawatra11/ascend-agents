@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 import math
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from itertools import count
 
 from app.core.exceptions import RecommendationNotFoundError
@@ -145,7 +145,8 @@ class RecommendationService:
                     "quantity_or_detail": "Redirect new admissions",
                     "confidence": 88,
                     "reasons": [
-                        f"Bed occupancy forecast: {bed['predicted_occupancy_next_week_pct']}% next week",
+                        f"Bed occupancy forecast: "
+                        f"{bed['predicted_occupancy_next_week_pct']}% next week",
                         f"{target['name']} has available maternity capacity",
                     ],
                     "status": "pending",
@@ -220,7 +221,7 @@ class RecommendationService:
             "quantity_override": quantity_override,
             "confidence": rec["confidence"],
             "resolved_by": resolved_by or "district_admin",
-            "resolved_at": datetime.now(timezone.utc).isoformat(),
+            "resolved_at": datetime.now(UTC).isoformat(),
         }
         self._audit_log.append(entry)
 

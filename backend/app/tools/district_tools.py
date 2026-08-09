@@ -32,11 +32,11 @@ def build_tools(
         return {"medicines": forecast.all_medicine_forecasts()}
 
     def get_footfall_forecast() -> dict:
-        """Return the district's 7-day patient footfall forecast and tomorrow's demographic breakdown."""
+        """Return the 7-day footfall forecast and tomorrow's demographic breakdown."""
         return forecast.footfall_forecast()
 
     def get_recommendations() -> dict:
-        """Return current pending AI recommendations (resource transfers, staffing, bed redirects)."""
+        """Return pending AI recommendations (transfers, staffing, bed redirects)."""
         return {"recommendations": recommendation.list(status="pending")}
 
     def get_causal_chain(facility_id: str) -> dict:
