@@ -5,6 +5,8 @@ ever proposes: state transitions to approved/rejected/modified happen exclusivel
 through RecommendationService.resolve(), mirroring the human-in-the-loop contract.
 """
 
+from __future__ import annotations
+
 import logging
 import math
 from datetime import datetime, timezone

@@ -21,7 +21,9 @@ def create_app() -> FastAPI:
 
     origins = settings.cors_origins + [
         "https://swasthyagrid.vercel.app",
-        "https://swasthyagrid-git-main-harshkawatra11s-projects.vercel.app"
+        "https://swasthyagrid-git-main-harshkawatra11s-projects.vercel.app",
+        "https://swasthyagridai.vercel.app",
+        "https://swasthyagridai-git-main-harshkawatra11s-projects.vercel.app",
     ]
 
     app.add_middleware(
