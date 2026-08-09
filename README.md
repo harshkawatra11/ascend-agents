@@ -20,9 +20,26 @@ Built for **Ascendant Agents** (DCODE) — Track 07, Open Innovation
 
 <br/>
 
+[![Live App](https://img.shields.io/badge/Live_App-swasthyagridai.vercel.app-5B21E6?style=for-the-badge&logo=vercel&logoColor=white)](https://swasthyagridai.vercel.app)
+[![Cloud Run](https://img.shields.io/badge/Backend-Cloud_Run_asia--south1-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)](https://swasthyagrid-api-56144345841.asia-south1.run.app/docs)
+
+<br/>
+
 [The idea](#the-idea) · [Architecture](#architecture) · [The moneyshot](#the-moneyshot-a-worked-example) · [Quickstart](#quickstart) · [What's real vs. roadmap](#whats-real-vs-roadmap) · [Demo](#demo)
 
 </div>
+
+---
+
+## Live deployment
+
+| Component | URL | Notes |
+|---|---|---|
+| Frontend | [swasthyagridai.vercel.app](https://swasthyagridai.vercel.app) | Next.js on Vercel, production |
+| Backend API | [swasthyagrid-api-56144345841.asia-south1.run.app](https://swasthyagrid-api-56144345841.asia-south1.run.app/docs) | FastAPI on Cloud Run, `asia-south1`, project `swasthya-ai-2026`, scale to zero |
+| Data | Firestore not yet seeded on this deployment, so the backend serves from `seed_district.json` | The graceful-fallback path described below, running live |
+
+The frontend still works with the backend cold or unreachable. Every screen renders from bundled mock data within 3 seconds if the API doesn't answer.
 
 ---
 
