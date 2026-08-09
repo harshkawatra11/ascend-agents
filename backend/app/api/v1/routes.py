@@ -74,15 +74,18 @@ def approve_recommendation(
     rec_svc: RecommendationService = Depends(get_recommendation_service),
 ):
     qty = body.quantity_override if body else None
-    return rec_svc.resolve(rec_id, "approved", quantity_override=qty)
+    resolved_by = body.resolved_by if body else None
+    return rec_svc.resolve(rec_id, "approved", quantity_override=qty, resolved_by=resolved_by)
 
 
 @router.post("/recommendations/{rec_id}/reject")
 def reject_recommendation(
     rec_id: str,
+    body: RecommendationResolveRequest | None = None,
     rec_svc: RecommendationService = Depends(get_recommendation_service),
 ):
-    return rec_svc.resolve(rec_id, "rejected")
+    resolved_by = body.resolved_by if body else None
+    return rec_svc.resolve(rec_id, "rejected", resolved_by=resolved_by)
 
 
 @router.post("/recommendations/{rec_id}/modify")
@@ -91,7 +94,14 @@ def modify_recommendation(
     body: RecommendationResolveRequest,
     rec_svc: RecommendationService = Depends(get_recommendation_service),
 ):
-    return rec_svc.resolve(rec_id, "modified", quantity_override=body.quantity_override)
+    return rec_svc.resolve(
+        rec_id, "modified", quantity_override=body.quantity_override, resolved_by=body.resolved_by
+    )
+
+
+@router.get("/audit-log")
+def audit_log(rec_svc: RecommendationService = Depends(get_recommendation_service)):
+    return {"entries": rec_svc.audit_log()}
 
 
 @router.get("/alerts")

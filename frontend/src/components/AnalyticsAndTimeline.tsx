@@ -1,16 +1,16 @@
+"use client";
+
+import { useRecommendations } from "@/lib/store";
+import { agents, buildAgentActivity } from "@/lib/agents";
+
 interface CausalChain {
   headline: string;
   chain: string[];
 }
 
-const timeline = [
-  { when: "Yesterday", event: "Doctor shortage reported at PHC Phagi" },
-  { when: "Today", event: "Patient queue increased at CHC East" },
-  { when: "Tomorrow", event: "Medicine demand spike forecast" },
-  { when: "Next Week", event: "High system overload risk district-wide" },
-];
-
 export function AnalyticsAndTimeline({ causalChain }: { causalChain: CausalChain }) {
+  const { recommendations, loading } = useRecommendations();
+  const activity = buildAgentActivity(recommendations).slice(0, 4);
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <div className="border border-hairline bg-paper-dim/40 p-5">
@@ -37,16 +37,27 @@ export function AnalyticsAndTimeline({ causalChain }: { causalChain: CausalChain
 
       <div className="border border-hairline bg-paper-dim/40 p-5">
         <p className="text-[11px] tracking-[0.14em] uppercase text-ink-soft mb-3">
-          AI Timeline
+          Agent Activity
         </p>
-        <div className="space-y-3">
-          {timeline.map((t) => (
-            <div key={t.when} className="flex gap-3 text-sm">
-              <span className="w-20 shrink-0 text-ink-soft">{t.when}</span>
-              <span className="text-ink">{t.event}</span>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-sm text-ink-soft">Loading…</p>
+        ) : activity.length === 0 ? (
+          <p className="text-sm text-ink-soft">No agent activity yet.</p>
+        ) : (
+          <div className="space-y-3">
+            {activity.map((e, i) => (
+              <div key={i} className="flex gap-3 text-sm">
+                <span
+                  className="w-16 shrink-0 text-[10px] tracking-[0.1em] uppercase font-medium pt-0.5"
+                  style={{ color: agents[e.agent].colorVar }}
+                >
+                  {agents[e.agent].name}
+                </span>
+                <span className="text-ink">{e.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

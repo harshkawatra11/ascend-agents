@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class RecommendationResolveRequest(BaseModel):
     quantity_override: str | None = None
     reason: str | None = None
+    resolved_by: str | None = None
 
 
 class AskRequest(BaseModel):

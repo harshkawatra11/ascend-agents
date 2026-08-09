@@ -16,7 +16,8 @@ interface RecommendationsContextValue {
   resolve: (
     id: string,
     status: "approved" | "rejected" | "modified",
-    quantityOverride?: string
+    quantityOverride?: string,
+    resolvedBy?: string
   ) => Promise<void>;
   toast: string | null;
 }
@@ -44,7 +45,8 @@ export function RecommendationsProvider({ children }: { children: React.ReactNod
     async (
       id: string,
       status: "approved" | "rejected" | "modified",
-      quantityOverride?: string
+      quantityOverride?: string,
+      resolvedBy?: string
     ) => {
       setRecommendations((prev) =>
         prev.map((r) =>
@@ -61,7 +63,7 @@ export function RecommendationsProvider({ children }: { children: React.ReactNod
             ? `Rejected: ${rec?.subject ?? "recommendation"}`
             : `Modified & approved: ${rec?.subject ?? "recommendation"}`
       );
-      await resolveRecommendation(id, actionForStatus[status], quantityOverride);
+      await resolveRecommendation(id, actionForStatus[status], quantityOverride, resolvedBy);
     },
     [recommendations]
   );

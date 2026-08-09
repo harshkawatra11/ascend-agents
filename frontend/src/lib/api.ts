@@ -114,19 +114,42 @@ export async function getRecommendations(): Promise<Recommendation[]> {
 export async function resolveRecommendation(
   id: string,
   action: "approve" | "reject" | "modify",
-  quantityOverride?: string
+  quantityOverride?: string,
+  resolvedBy?: string
 ): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/v1/recommendations/${id}/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity_override: quantityOverride ?? null }),
+      body: JSON.stringify({
+        quantity_override: quantityOverride ?? null,
+        resolved_by: resolvedBy ?? null,
+      }),
       signal: AbortSignal.timeout(3000),
     });
     return res.ok;
   } catch {
     return false;
   }
+}
+
+export interface AuditLogEntry {
+  rec_id: string;
+  type: string;
+  subject: string;
+  previous_status: string;
+  new_status: string;
+  quantity_override: string | null;
+  confidence: number;
+  resolved_by: string;
+  resolved_at: string;
+}
+
+export async function getAuditLog(): Promise<AuditLogEntry[]> {
+  const data = await safeFetch<{ entries: AuditLogEntry[] }>("/api/v1/audit-log", {
+    entries: [],
+  });
+  return data.entries;
 }
 
 export async function getAlerts(): Promise<Alert[]> {
@@ -289,7 +312,7 @@ export async function askSwasthyaGrid(message: string) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || err.detail || `ask responded ${res.status}`);
   }
-  return (await res.json()) as { answer: string; confidence?: number };
+  return (await res.json()) as { answer: string; tool_calls?: string[]; confidence?: number };
 }
 
 export { API_BASE };

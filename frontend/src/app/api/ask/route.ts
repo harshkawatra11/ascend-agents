@@ -45,11 +45,40 @@ function buildDataContext() {
   });
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8080";
+
+/**
+ * The FastAPI backend's /ask uses HealthAgent, a Gemini tool-calling agent bound to
+ * 7 grounded district tools, and returns tool_calls[] alongside the answer — the
+ * live "Monitor called X → Reason called Y" trace the Agent Console renders. Try it
+ * first. Only fall back to this route's own tool-less single-shot Gemini call (and,
+ * below that, the static fallback message) when the backend is unreachable — this
+ * keeps "Ask SwasthyaGrid" working with zero backend, per the app's existing
+ * fallback-everywhere contract.
+ */
+async function askBackend(message: string) {
+  const res = await fetch(`${API_BASE}/api/v1/ask`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message }),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`backend /ask responded ${res.status}`);
+  return (await res.json()) as { answer: string; tool_calls: string[]; confidence: number | null };
+}
+
 export async function POST(request: Request) {
   const { message } = (await request.json()) as { message?: string };
 
   if (!message) {
     return NextResponse.json({ error: "message is required" }, { status: 400 });
+  }
+
+  try {
+    const backendResult = await askBackend(message);
+    return NextResponse.json(backendResult);
+  } catch {
+    // Backend unreachable — fall through to the direct Gemini call below.
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -67,9 +96,9 @@ export async function POST(request: Request) {
     });
     const answer = result.text;
 
-    return NextResponse.json({ answer, confidence: 90 });
+    return NextResponse.json({ answer, tool_calls: [], confidence: 90 });
   } catch (error) {
     console.error("Gemini ask route failed", error);
-    return NextResponse.json({ answer: FALLBACK_MESSAGE, confidence: null });
+    return NextResponse.json({ answer: FALLBACK_MESSAGE, tool_calls: [], confidence: null });
   }
 }

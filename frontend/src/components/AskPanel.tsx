@@ -5,7 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface AskResponse {
   answer: string;
+  tool_calls?: string[];
   confidence?: number;
+}
+
+/** "get_medicine_stock" -> "Get Medicine Stock" */
+function humanizeTool(tool: string) {
+  return tool
+    .replace(/^get_/, "")
+    .split("_")
+    .map((w) => w[0]?.toUpperCase() + w.slice(1))
+    .join(" ");
 }
 
 export function AskPanel() {
@@ -70,6 +80,19 @@ export function AskPanel() {
 
             {response && (
               <div className="mt-3 border-t border-hairline pt-3 text-sm text-ink">
+                {response.tool_calls && response.tool_calls.length > 0 && (
+                  <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[10px] tracking-[0.1em] uppercase">
+                    <span className="text-accent-brass font-medium">Monitor</span>
+                    {response.tool_calls.map((tool, i) => (
+                      <span key={i} className="flex items-center gap-1.5">
+                        <span className="text-ink-soft">→</span>
+                        <span className="px-1.5 py-0.5 border border-hairline bg-paper-dim/60 text-ink-soft normal-case tracking-normal">
+                          {humanizeTool(tool)}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <p>{response.answer}</p>
                 {typeof response.confidence === "number" && (
                   <p className="text-xs text-ink-soft mt-1">

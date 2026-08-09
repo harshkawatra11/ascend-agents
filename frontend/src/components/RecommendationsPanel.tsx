@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ListChecks } from "lucide-react";
+import { ListChecks, ShieldCheck } from "lucide-react";
 import { facilityById, type Recommendation } from "@/data/district";
 import { useRecommendations } from "@/lib/store";
-import { useRole, roleCapabilities } from "@/lib/roleContext";
+import { useRole, roleCapabilities, roleLabels } from "@/lib/roleContext";
 import { SkeletonBlock } from "@/components/ui/Skeleton";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { agents, agentOrder, groupReasonsByAgent } from "@/lib/agents";
 
 const typeLabel: Record<Recommendation["type"], string> = {
   stock_transfer: "Stock Transfer",
@@ -67,49 +68,75 @@ function RecommendationCard({
         <ConfidenceRing value={rec.confidence} />
       </div>
 
-      <ul className="mt-4 space-y-1.5">
-        {rec.reasons.map((r, i) => (
-          <li key={i} className="text-sm text-ink-soft flex gap-2">
-            <span className="text-accent-brass">—</span>
-            <span>{r}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-4 space-y-3">
+        {agentOrder.map((agentId) => {
+          const lines = groupReasonsByAgent(rec.reasons)[agentId];
+          if (lines.length === 0) return null;
+          return (
+            <div key={agentId}>
+              <p
+                className="text-[10px] tracking-[0.14em] uppercase font-medium mb-1"
+                style={{ color: agents[agentId].colorVar }}
+              >
+                {agentId === "monitor"
+                  ? "Monitor detected"
+                  : agentId === "reason"
+                    ? "Reason concluded"
+                    : "Act proposes"}
+              </p>
+              <ul className="space-y-1">
+                {lines.map((r, i) => (
+                  <li key={i} className="text-sm text-ink-soft flex gap-2">
+                    <span style={{ color: agents[agentId].colorVar }}>—</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
 
       {rec.status === "pending" ? (
         canApprove ? (
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            {editing && (
-              <input
-                value={qty}
-                onChange={(e) => setQty(e.target.value)}
-                className="border border-hairline bg-paper px-2 py-1.5 text-sm text-ink w-40 mr-auto"
-              />
-            )}
-            <button
-              onClick={() => onResolve(rec.id, "approved")}
-              className="px-4 py-1.5 text-sm font-medium bg-accent-clay text-paper hover:brightness-110 transition"
-            >
-              Approve
-            </button>
-            <button
-              onClick={() => {
-                if (editing) onResolve(rec.id, "modified", qty);
-                else setEditing(true);
-              }}
-              className="px-4 py-1.5 text-sm font-medium border border-accent-brass text-accent-brass hover:bg-accent-brass hover:text-paper transition"
-            >
-              {editing ? "Save & Approve" : "Modify"}
-            </button>
-            <button
-              onClick={() => onResolve(rec.id, "rejected")}
-              className="px-4 py-1.5 text-sm font-medium text-ink-soft hover:text-risk-critical transition"
-            >
-              Reject
-            </button>
+          <div className="mt-5 border-t border-hairline pt-4">
+            <p className="flex items-center gap-1.5 text-[10px] tracking-[0.14em] uppercase font-medium text-accent-clay mb-2.5">
+              <ShieldCheck size={12} />
+              Human Approval Required — nothing executes without it
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              {editing && (
+                <input
+                  value={qty}
+                  onChange={(e) => setQty(e.target.value)}
+                  className="border border-hairline bg-paper px-2 py-1.5 text-sm text-ink w-40 mr-auto"
+                />
+              )}
+              <button
+                onClick={() => onResolve(rec.id, "approved")}
+                className="px-4 py-1.5 text-sm font-medium bg-accent-clay text-paper hover:brightness-110 transition"
+              >
+                Approve
+              </button>
+              <button
+                onClick={() => {
+                  if (editing) onResolve(rec.id, "modified", qty);
+                  else setEditing(true);
+                }}
+                className="px-4 py-1.5 text-sm font-medium border border-accent-brass text-accent-brass hover:bg-accent-brass hover:text-paper transition"
+              >
+                {editing ? "Save & Approve" : "Modify"}
+              </button>
+              <button
+                onClick={() => onResolve(rec.id, "rejected")}
+                className="px-4 py-1.5 text-sm font-medium text-ink-soft hover:text-risk-critical transition"
+              >
+                Reject
+              </button>
+            </div>
           </div>
         ) : (
-          <p className="mt-5 text-xs tracking-[0.14em] uppercase font-medium text-ink-soft">
+          <p className="mt-5 text-xs tracking-[0.14em] uppercase font-medium text-ink-soft border-t border-hairline pt-4">
             Pending district administrator review
           </p>
         )
@@ -142,6 +169,11 @@ export function RecommendationsPanel({
   const { recommendations, loading, resolve } = useRecommendations();
   const { role } = useRole();
   const canApprove = roleCapabilities[role].canApprove;
+  const onResolve = (
+    id: string,
+    status: "approved" | "rejected" | "modified",
+    qty?: string
+  ) => resolve(id, status, qty, roleLabels[role]);
 
   let recs = filterType ? recommendations.filter((r) => r.type === filterType) : recommendations;
   if (limit) recs = recs.slice(0, limit);
@@ -171,7 +203,7 @@ export function RecommendationsPanel({
     <div className={gridClass}>
       <AnimatePresence initial={false}>
         {recs.map((rec) => (
-          <RecommendationCard key={rec.id} rec={rec} onResolve={resolve} canApprove={canApprove} />
+          <RecommendationCard key={rec.id} rec={rec} onResolve={onResolve} canApprove={canApprove} />
         ))}
       </AnimatePresence>
     </div>

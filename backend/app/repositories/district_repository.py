@@ -60,6 +60,12 @@ class DistrictRepository:
             self._firestore_unavailable = True
             return None
 
+    def get_firestore_client(self):
+        """Public accessor so other services (e.g. the approval audit trail) can
+        reuse this repository's lazily-initialized Firestore client without each
+        maintaining its own connection/fallback logic."""
+        return self._get_firestore_client()
+
     def _load_from_firestore(self) -> dict[str, Any] | None:
         client = self._get_firestore_client()
         if client is None:

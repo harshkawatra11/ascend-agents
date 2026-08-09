@@ -8,6 +8,7 @@ import { DistrictMapClient } from "@/components/DistrictMapClient";
 import { RiskDonut } from "@/components/RiskDonut";
 import { AlertsList } from "@/components/AlertsList";
 import { RecommendationsPanel } from "@/components/RecommendationsPanel";
+import { AgentStatusStrip } from "@/components/AgentStatusStrip";
 import { useLiveFacilities, useRecommendations } from "@/lib/store";
 import { getAlerts, getDistrictKpis } from "@/lib/api";
 import { districtKpis as mockKpis } from "@/data/district";
@@ -40,6 +41,8 @@ export default function OverviewPage() {
       <PageHeader eyebrow="Live Status" title="District Overview" />
 
       <KpiStrip kpis={kpis} />
+
+      <AgentStatusStrip />
 
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
         <div>

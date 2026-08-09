@@ -10,10 +10,12 @@ import {
   Building2,
   LineChart,
   HeartPulse,
+  Bot,
 } from "lucide-react";
 
 export const navItems = [
   { href: "/overview", label: "Overview", icon: LayoutGrid, group: "Command" },
+  { href: "/agents", label: "Agent Console", icon: Bot, group: "Command" },
   { href: "/recommendations", label: "Recommendations", icon: ListChecks, group: "Command" },
   { href: "/inventory", label: "Inventory", icon: Pill, group: "Operations" },
   { href: "/footfall", label: "Footfall", icon: Users, group: "Operations" },

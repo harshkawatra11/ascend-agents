@@ -5,12 +5,16 @@ ever proposes: state transitions to approved/rejected/modified happen exclusivel
 through RecommendationService.resolve(), mirroring the human-in-the-loop contract.
 """
 
+import logging
 import math
+from datetime import datetime, timezone
 from itertools import count
 
 from app.core.exceptions import RecommendationNotFoundError
 from app.repositories.district_repository import DistrictRepository
 from app.services.forecast_service import ForecastService
+
+logger = logging.getLogger("swasthyagrid")
 
 _id_counter = count(1)
 
@@ -31,6 +35,7 @@ class RecommendationService:
         self.repo = repo
         self.forecast = forecast
         self._recommendations: dict[str, dict] = {}
+        self._audit_log: list[dict] = []
         self._generate_stock_transfer_recommendations()
         self._seed_extra_recommendations()
 
@@ -176,12 +181,53 @@ class RecommendationService:
         return sorted(values, key=lambda r: -r["confidence"])
 
     def resolve(
-        self, rec_id: str, status: str, quantity_override: str | None = None
+        self,
+        rec_id: str,
+        status: str,
+        quantity_override: str | None = None,
+        resolved_by: str | None = None,
     ) -> dict:
         if rec_id not in self._recommendations:
             raise RecommendationNotFoundError(rec_id)
         rec = self._recommendations[rec_id]
+        previous_status = rec["status"]
         rec["status"] = status
         if quantity_override:
             rec["quantity_or_detail"] = quantity_override
+        self._log_resolution(rec, previous_status, status, quantity_override, resolved_by)
         return rec
+
+    def _log_resolution(
+        self,
+        rec: dict,
+        previous_status: str,
+        new_status: str,
+        quantity_override: str | None,
+        resolved_by: str | None,
+    ) -> None:
+        """Append every human decision to an audit trail. Best-effort persists to
+        Firestore (falls back silently to the in-memory list, mirroring the read
+        path's own Firestore-or-seed pattern) so 'every AI-surfaced recommendation
+        has a recorded human decision' is demonstrable, not just asserted."""
+        entry = {
+            "rec_id": rec["id"],
+            "type": rec["type"],
+            "subject": rec["subject"],
+            "previous_status": previous_status,
+            "new_status": new_status,
+            "quantity_override": quantity_override,
+            "confidence": rec["confidence"],
+            "resolved_by": resolved_by or "district_admin",
+            "resolved_at": datetime.now(timezone.utc).isoformat(),
+        }
+        self._audit_log.append(entry)
+
+        try:
+            client = self.repo.get_firestore_client()
+            if client is not None:
+                client.collection("approval_log").add(entry)
+        except Exception:
+            logger.warning("Failed to persist approval to Firestore audit log.", exc_info=True)
+
+    def audit_log(self) -> list[dict]:
+        return sorted(self._audit_log, key=lambda e: e["resolved_at"], reverse=True)
