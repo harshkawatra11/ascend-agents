@@ -39,6 +39,7 @@ class DistrictRepository:
         self._last_refresh = time.monotonic()
         self._firestore_client = None
         self._firestore_unavailable = False
+        self._source = "seed"
         self._try_refresh_from_firestore(force=True)
 
     def _load_json(self) -> dict[str, Any]:
@@ -111,6 +112,7 @@ class DistrictRepository:
         if fresh is None:
             return
 
+        self._source = "firestore"
         serialized = json.dumps(fresh, sort_keys=True, default=str).encode()
         new_hash = hashlib.sha256(serialized).hexdigest()
         old_hash = getattr(self, "_data_hash", None)
@@ -123,6 +125,16 @@ class DistrictRepository:
     def version(self) -> int:
         self._try_refresh_from_firestore()
         return self._version
+
+    @property
+    def source(self) -> str:
+        """'firestore' if Firestore is currently reachable and seeded, else 'seed'."""
+        self._try_refresh_from_firestore()
+        return self._source
+
+    @property
+    def last_refresh_age_seconds(self) -> float:
+        return round(time.monotonic() - self._last_refresh, 1)
 
     @property
     def district(self) -> dict[str, Any]:

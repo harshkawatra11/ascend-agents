@@ -14,6 +14,12 @@
   --color-risk-monitor: #a8823a;
   --color-risk-stress: #b5622e;
   --color-risk-critical: #9e3a2e;
+
+  --color-console-bg: #1c1a16;
+  --color-console-bg-dim: #232019;
+  --color-console-text: #e8dfcc;
+  --color-console-text-soft: #a89a80;
+  --color-console-line: #35311f;
 }
 
 @theme inline {
@@ -30,8 +36,15 @@
   --color-risk-stress: var(--color-risk-stress);
   --color-risk-critical: var(--color-risk-critical);
 
+  --color-console-bg: var(--color-console-bg);
+  --color-console-bg-dim: var(--color-console-bg-dim);
+  --color-console-text: var(--color-console-text);
+  --color-console-text-soft: var(--color-console-text-soft);
+  --color-console-line: var(--color-console-line);
+
   --font-serif: var(--font-fraunces);
   --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
 }
 
 * {
@@ -54,6 +67,20 @@ body {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+.font-mono-trace {
+  font-family: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.6s ease-in-out infinite;
 }
 
 .leaflet-container {

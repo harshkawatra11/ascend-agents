@@ -104,6 +104,14 @@ def audit_log(rec_svc: RecommendationService = Depends(get_recommendation_servic
     return {"entries": rec_svc.audit_log()}
 
 
+@router.get("/agents/trace")
+def agents_trace(rec_svc: RecommendationService = Depends(get_recommendation_service)):
+    """Re-runs the real recommendation engine, instrumented, and returns every
+    decision step it actually took with true elapsed timing. Does not mutate
+    live recommendation state."""
+    return rec_svc.run_traced_cycle()
+
+
 @router.get("/alerts")
 def alerts(
     severity: str | None = None,
