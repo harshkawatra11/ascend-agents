@@ -180,7 +180,13 @@ ascend-agents/
 │   ├── src/components/
 │   │   ├── shell/                         DashboardShell, Sidebar, Topbar, RoleSwitcher, CommandPalette
 │   │   ├── ui/                            Toast, Drawer, Skeleton, EmptyState
-│   │   ├── AgentConsole.tsx                the 3 agent cards + live activity feed + approval gate banner
+│   │   ├── agents/
+│   │   │   ├── TraceStream.tsx             terminal-style live log of the real decision trace
+│   │   │   ├── AgentPipeline.tsx           Monitor/Reason/Act pipeline, highlights the active stage
+│   │   │   ├── RunControlBar.tsx           status, real duration, countdown, run-now/pause, data source
+│   │   │   ├── LiveCounters.tsx            facilities/candidates/rejections/proposals, ticking live
+│   │   │   └── ApprovalQueue.tsx           this cycle's proposals, wired to the real resolve() flow
+│   │   ├── AgentConsole.tsx                composes the above into the /agents screen
 │   │   ├── AgentStatusStrip.tsx            compact agent status, shown on Overview
 │   │   ├── RecommendationsPanel.tsx        recommendation cards, reasons grouped by agent stage
 │   │   ├── AskPanel.tsx                    chat widget, renders the live tool-call trace
@@ -188,16 +194,20 @@ ascend-agents/
 │   ├── src/lib/
 │   │   ├── api.ts                         typed fetch client, every call has a graceful mock fallback
 │   │   ├── agents.ts                      the agent registry, reasons[] → Monitor/Reason/Act grouping
+│   │   ├── agentTrace.ts                  types + fetch for GET /api/v1/agents/trace, sample fallback
+│   │   ├── useAgentRun.ts                 the replay state machine: fetch, pace, interval, pause/run-now
 │   │   ├── store.tsx                      RecommendationsProvider, live facility risk state
 │   │   └── roleContext.tsx                district_admin / phc_staff / state_officer capabilities
-│   └── src/data/district.ts               bundled mock data, the zero-backend fallback source
+│   └── src/data/
+│       ├── district.ts                    bundled mock data, the zero-backend fallback source
+│       └── sample-trace.ts                a real captured GET /api/v1/agents/trace run, recorded not hand-written
 │
 ├── backend/                               FastAPI service → Cloud Run
 │   ├── app/
 │   │   ├── main.py                        app factory, CORS allowlist, security headers, router mounting
 │   │   ├── api/v1/
-│   │   │   ├── routes.py                  16 REST endpoints: district, facilities, medicines, beds,
-│   │   │   │                              doctors, diagnostics, recommendations, alerts, analytics, audit-log
+│   │   │   ├── routes.py                  17 REST endpoints: district, facilities, medicines, beds, doctors,
+│   │   │   │                              diagnostics, recommendations, alerts, analytics, audit-log, agents/trace
 │   │   │   ├── chat.py                    POST /ask, the admin HealthAgent
 │   │   │   ├── public_chat.py             POST /public-ask, the citizen PublicAgent
 │   │   │   └── health.py                  GET /health
@@ -206,7 +216,8 @@ ascend-agents/
 │   │   │   └── public_agent.py            Gemini tool-calling agent, 2 tools, disjoint from HealthAgent
 │   │   ├── services/
 │   │   │   ├── forecast_service.py        Monitor: risk tiering for medicines, beds, doctors, diagnostics
-│   │   │   ├── recommendation_service.py  Reason + Act: the confidence formula, resolve(), the audit log
+│   │   │   ├── recommendation_service.py  Reason + Act: confidence formula, resolve(), audit log, run_traced_cycle()
+│   │   │   ├── trace.py                   TraceCollector: records real decision points with true elapsed timing
 │   │   │   └── district_service.py        district summary and performance-scorecard aggregation
 │   │   ├── repositories/district_repository.py   Firestore-first, JSON-seed-fallback data access, 20s refresh TTL
 │   │   ├── tools/
@@ -291,6 +302,34 @@ the agent actually looked at before it spoke.
 
 ---
 
+## The agent console: a real decision trace, not a diagram
+
+`recommendation_service.py` already performs real work on every construction and throws almost
+all of it away: it scans every facility, evaluates every medicine forecast, examines every
+candidate surplus facility, rejects most of them, and scores the survivors. `TraceCollector`
+(`backend/app/services/trace.py`) is an optional parameter threaded through the same generation
+methods that build recommendations, so it records each real decision point as it happens rather
+than re-describing the logic in a second, possibly-drifting place. When the collector is absent
+(the normal startup path), nothing changes.
+
+`GET /api/v1/agents/trace` calls `RecommendationService.run_traced_cycle()`, which re-runs
+generation into a scratch dict (it never touches live recommendation state, so an administrator's
+earlier approval survives a re-run) and returns every step with its true elapsed time
+(`time.perf_counter_ns()`), a summary, and the cycle's proposals cross-referenced against their
+live status.
+
+The pipeline itself completes in under a millisecond, so the frontend (`lib/useAgentRun.ts`)
+replays the real steps on a readable ~9-second timer instead of dumping them all at once: the
+`elapsed_us` shown per step is the real measured value, only the on-screen reveal is paced. The
+console drives its own cycle on a 30-second interval with a visible countdown, run-now, and pause
+controls. **This is a client-driven interval, not a server-side scheduler**: see
+[What's real vs. roadmap](#whats-real-vs-roadmap). When the backend is unreachable, it falls back
+to a real captured trace (`frontend/src/data/sample-trace.ts`, recorded from an actual run, not
+hand-written) and says so with a visible "sample run" badge rather than silently passing a
+recording off as live.
+
+---
+
 ## Quickstart
 
 Every screen in the frontend renders from local mock data with **zero backend, zero Firestore,
@@ -354,18 +393,26 @@ Honesty over hype. This is exactly what's built today, and exactly what isn't.
 **Built:**
 - Deterministic Monitor → Reason → Act pipeline, verified against live seed data (the worked
   example above came from the running engine, not a slide)
-- Hard-coded human approval gate, `resolve()` is the only state-transition path in the codebase
+- A real instrumented decision trace (`GET /api/v1/agents/trace`) exposing every scan, candidate,
+  rejection, and score the engine actually computes, with true elapsed timing, replayed live in
+  the `/agents` console
+- The console drives its own cycle on a client-side interval (30s, with a countdown, run-now, and
+  pause controls) rather than only reacting to whatever recommendations already existed
+- Hard-coded human approval gate, `resolve()` is the only state-transition path in the codebase,
+  operable directly from the `/agents` console as well as `/recommendations`
 - Persisted approval audit trail (Firestore, with an in-memory fallback)
 - Two Gemini tool-calling agents with a disjoint admin/citizen toolset
-- Graceful degradation to zero-backend mock data on every screen
+- Graceful degradation to zero-backend mock data on every screen, including a real captured trace
+  as the agent console's offline fallback
 - A CRM app for real facility-side data intake
 - CI on every push: Ruff lint, pytest, frontend build
 - Live deployment: Vercel (frontend) and Cloud Run (backend)
 
 **Roadmap, not built:**
-- A scheduler for autonomous Monitor runs, today it's pull-on-read with a 20-second TTL, not a
-  background job
-- No SSE/websocket, the agent console polls, it doesn't stream
+- A true server-side scheduler for autonomous Monitor runs. What exists today is a client-driven
+  interval in the browser, not a background job independent of anyone having the console open;
+  `DistrictRepository` itself is still pull-on-read with a 20-second TTL
+- No SSE/websocket, the trace replay is a single fetch paced client-side, it doesn't stream
 - No government data integration yet (HMIS/IDSP/ABDM), seed data models one illustrative
   district (Jaipur Rural, Rajasthan; 8 facilities)
 - No ML forecasting, the service interface (`{value, confidence, factors[]}`) is designed so a
