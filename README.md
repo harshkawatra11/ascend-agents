@@ -8,7 +8,7 @@
 
 **Monitor · Reason · Act · Human Approval**
 
-Built for **Ascend Agents**, Track 07 : Open Innovation
+Built for **Ascendant Agents**, Track 07 : Open Innovation
 
 <br/>
 
